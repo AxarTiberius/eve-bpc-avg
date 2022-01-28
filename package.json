@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ansi-colors": "^4.1.1",
     "async": "^3.2.3",
+    "cli-progress": "^3.10.0",
     "micro-request": "^666.0.10",
     "sqlite3": "^5.0.2"
   }
