@@ -28,10 +28,10 @@ const csvHeaders = [
 
 const hubs = {
   '10000002': 'The Forge',
-//  '10000043': 'Domain',
-//  '10000030': 'Heimatar',
-//  '10000032': 'Sinq Laison',
-//  '10000042': 'Metropolis'
+  '10000043': 'Domain',
+  '10000030': 'Heimatar',
+  '10000032': 'Sinq Laison',
+  '10000042': 'Metropolis'
 }
 const hub_ids = Object.keys(hubs)
 
@@ -177,7 +177,7 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
     })
   }, function (lastFetchLength, testCb) {
     page++
-    testCb(null, false) // disable paging for testing lastFetchLength === pageLimit)
+    testCb(null, lastFetchLength === pageLimit)
   }, function (err, results) {
     if (err) return done(err)
     done()
