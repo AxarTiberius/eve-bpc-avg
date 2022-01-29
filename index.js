@@ -8,15 +8,17 @@ if (!fs.existsSync('./data/eve.sqlite')) {
   process.exit(1)
 }
 
+var taskLimit = 8, sortIndex = 4, pageLimit = 1000;
+
 // optional authentication
 var accessToken = null
 
 var hubs = {
   '10000002': 'The Forge',
-  '10000043': 'Domain',
-  '10000030': 'Heimatar',
-  '10000032': 'Sinq Laison',
-  '10000042': 'Metropolis'
+//  '10000043': 'Domain',
+//  '10000030': 'Heimatar',
+//  '10000032': 'Sinq Laison',
+//  '10000042': 'Metropolis'
 }
 var hub_ids = Object.keys(hubs)
 
@@ -66,80 +68,164 @@ function apiRequest (method, path, postData, onRes) {
   })
 }
 
-async.reduce(hub_ids, {blueprints: {}}, function (data, regionID, done) {
+var rows = [
+  [
+    'typeID',
+    'invType.typeName',
+    'invType.description',
+    'prices.length',
+    'meanPrice',
+    'medianPrice',
+    'modePrice'
+  ]
+], results = {blueprints: {}}
+
+async.reduce(hub_ids, null, function (_ignore, regionID, done) {
   // type: 1 is item_exchange
-
-  // create new progress bar
-  const b1 = new cliProgress.SingleBar({
-    format: 'Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
-    barCompleteChar: '\u2588',
-    barIncompleteChar: '\u2591',
-    hideCursor: true
-  });
-
   const speedData = [];
+  var page = 1;
 
-  apiRequest('GET', 'contracts/public/' + regionID + '/', {page: 1, type: 1}, function (err, body) {
-    if (err) throw err
-    b1.start(body.length, 0, {
-      speed: 'calculating...'
+  async.doWhilst(function (pageCb) {
+    // create new progress bar
+    const b1 = new cliProgress.SingleBar({
+      format: 'Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
+      barCompleteChar: '\u2588',
+      barIncompleteChar: '\u2591',
+      hideCursor: true
     });
 
-    function getTps (lookback) {
-      lookback || (lookback = 5000);
-      var currentOp = null
-      var now = new Date().getTime()
-      var lookbackOps = 0
-      var idxBound = null
-      for (var idx = 0; idx < speedData.length; idx++) {
-        currentOp = speedData[idx]
-        if (currentOp < now - lookback) {
-          idxBound = idx;
-          break;
-        }
-        lookbackOps++
-      }
-      if (typeof idxBound === 'number') {
-        speedData.splice(0, idxBound)
-      }
-      var avgOps = lookbackOps / (lookback / 1000)
-      return avgOps
-    }
+    apiRequest('GET', 'contracts/public/' + regionID + '/', {page, type: 1}, function (err, body) {
+      if (err) throw err
+      var fetchLength = body.length || 0;
+      if (!fetchLength) return pageCb(null, 0)
+      b1.start(body.length, 0, {
+        speed: 'calculating...'
+      });
 
-    async.reduce(body, {}, function (subtaskData, contract, subtaskDone) {
-      apiRequest('GET', 'contracts/public/items/' + contract.contract_id + '/', function (err, body, resp) {
-        if (err) return subtaskDone(err)
-        // console.log('contract', contract)
-        speedData.unshift(new Date().getTime())
-        if (resp.statusCode === 204) {
-          // console.log('expired!')
-          
-          b1.increment(1, {
-            speed: getTps() + ' ops/sec'
+      function getTps (lookback) {
+        lookback || (lookback = 5000);
+        var currentOp = null
+        var now = new Date().getTime()
+        var lookbackOps = 0
+        var idxBound = null
+        var reverseSpeedData = speedData.reverse()
+        for (var idx = 0; idx < reverseSpeedData.length; idx++) {
+          currentOp = reverseSpeedData[idx]
+          if (currentOp < now - lookback) {
+            idxBound = idx;
+            break;
+          }
+          lookbackOps++
+        }
+        if (typeof idxBound === 'number' && speedData.length > idxBound) {
+          //speedData.splice(0, idxBound)
+        }
+        var avgOps = lookbackOps / (lookback / 1000)
+        return avgOps
+      }
+
+      var subtasks = body.map(function (contract) {
+        return function (contractDone) {
+          apiRequest('GET', 'contracts/public/items/' + contract.contract_id + '/', function (err, body, resp) {
+            if (err) return cb(err)
+            // console.log('contract', contract)
+            speedData.push(new Date().getTime())
+            if (resp.statusCode === 204) {
+              // console.log('expired!')
+              b1.increment(1, {
+                speed: getTps() + ' ops/sec'
+              })
+              return contractDone()
+            }
+            if (body.length === 1 && body[0].is_blueprint_copy && body[0].is_included) {
+              var bpc = body[0]
+              var bpc_key = '' + bpc.type_id
+              results.blueprints[bpc_key] || (results.blueprints[bpc_key] = []);
+              results.blueprints[bpc_key].push(contract.price)
+            }
+            b1.increment(1, {
+              speed: getTps() + ' ops/sec'
+            })
+            contractDone()
           })
-          return subtaskDone()
         }
-        if (body.length === 1 && body[0].is_blueprint_copy && body[0].is_included) {
-          var bpc = body[0]
-          var bpc_key = '' + bpc.type_id
-          data.blueprints[bpc_key] || (data.blueprints[bpc_key] = []);
-          data.blueprints[bpc_key].push(contract.price)
-        }
-        b1.increment(1, {
-          speed: getTps() + ' ops/sec'
-        })
-        subtaskDone()
       })
-    }, function (err, subtaskResult) {
-      if (err) return done(err)
-      b1.stop()
-      console.log('bpc prices', data.blueprints)
-      process.exit()
+
+      async.parallelLimit(subtasks, taskLimit, function (err) {
+        if (err) return done(err)
+        b1.stop()
+        pageCb(null, fetchLength)
+      })
     })
-    //apiRequest('GET', 'contracts/public/items/' + /?datasource=tranquility&page=1
+  }, function (lastFetchLength, testCb) {
+    page++
+    testCb(null, lastFetchLength === pageLimit)
+  }, function (err, results) {
+    if (err) return done(err)
+    done()
   })
-}, function (err, result) {
+}, function (err) {
   if (err) throw err
-  console.log('complete')
-  // db.close()
+  async.mapValues(results.blueprints, function (prices, typeID, done) {
+    db.get('SELECT * FROM invTypes WHERE typeID = ?', [typeID], function (err, invType) {
+      if (err) return done(err)
+      var totalPrice = prices.reduce(function (prev, cur) {
+        return prev + cur
+      }, 0)
+      var meanPrice = totalPrice / prices.length
+      var medianPrice = prices[0]
+      if (prices.length > 1) {
+        var midPoint = Math.floor(prices.length / 2)
+        medianPrice = prices[midPoint]
+      }
+      var occur = {}
+      prices.forEach(function (price) {
+        var k = price + ''
+        if (!occur[k]) occur[k] = 0;
+        occur[k]++
+      })
+      var maxOccur = 0, modePrice = 0;
+      Object.keys(occur).forEach(function (k) {
+        if (occur[k] > maxOccur) {
+          maxOccur = occur[k]
+          modePrice = Number(k)
+        }
+      })
+      rows.push([
+        typeID,
+        invType.typeName,
+        invType.description,
+        prices.length,
+        Math.round(meanPrice),
+        medianPrice,
+        modePrice
+      ])
+      done()
+    })
+  }, function (err) {
+    if (err) throw err
+    console.log('data collected! writing CSV...')
+    var file = fs.createWriteStream('./output.csv')
+    file.once('finish', function () {
+      console.log('wrote', './output.csv with', rows.length, 'rows')
+      db.close()
+    })
+    rows.sort(function (cur, prev) {
+      if (typeof cur[0] === 'string') {
+        // header
+        return -1
+      }
+      if (cur[sortIndex] > prev[sortIndex]) {
+        return -1
+      }
+      if (cur[sortIndex] == prev[sortIndex]) {
+        return 0
+      }
+      return 1
+    })
+    rows.forEach(function (row) {
+      file.write(row.join(',') + '\n')
+    })
+    file.end()
+  })
 })
