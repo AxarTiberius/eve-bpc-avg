@@ -1,0 +1,46 @@
+Zeugma Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Zeugma Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Zeugma Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Zeugma Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Zeugma Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Zeugma Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Small Gravity Capacitor Upgrade II Blueprint    Rig Blueprint     0.01 m3 
+Small Emission Scope Sharpener II Blueprint   Rig Blueprint     0.01 m3 
+Small Drone Durability Enhancer II Blueprint    Rig Blueprint     0.01 m3 
+Small Drone Durability Enhancer II Blueprint    Rig Blueprint     0.01 m3 
+Small Ancillary Remote Armor Repairer Blueprint   Remote Armor Repairer Blueprint     0.01 m3 
+Small Ancillary Armor Repairer Blueprint    Fueled Armor Repairer Blueprint     0.01 m3 
+Small Ancillary Armor Repairer Blueprint    Fueled Armor Repairer Blueprint     0.01 m3 
+Small Ancillary Armor Repairer Blueprint    Fueled Armor Repairer Blueprint     0.01 m3 
+Small Ancillary Armor Repairer Blueprint    Fueled Armor Repairer Blueprint     0.01 m3 
+Small Ancillary Armor Repairer Blueprint    Fueled Armor Repairer Blueprint     0.01 m3 
+Small Ancillary Armor Repairer Blueprint    Fueled Armor Repairer Blueprint     0.01 m3 
+Small Ancillary Armor Repairer Blueprint    Fueled Armor Repairer Blueprint     0.01 m3 
+Moa Blueprint   Cruiser Blueprint     0.01 m3 
+Medium Micro Jump Drive Blueprint   Micro Jump Drive Blueprint      0.01 m3 
+Medium Kinetic Shield Reinforcer II Blueprint   Rig Blueprint     0.01 m3 
+Medium Engine Thermal Shielding II Blueprint    Rig Blueprint     0.01 m3 
+Medium Egress Port Maximizer II Blueprint   Rig Blueprint     0.01 m3 
+Medium Capacitor Control Circuit II Blueprint   Rig Blueprint     0.01 m3 
+Medium Ancillary Remote Shield Booster Blueprint    Remote Shield Booster Blueprint     0.01 m3 
+Ligature Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Ligature Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Ligature Integrated Analyzer Blueprint    Data Miner Blueprint      0.01 m3 
+Large Signal Disruption Amplifier II Blueprint    Rig Blueprint     0.01 m3 
+Large Powergrid Subroutine Maximizer II Blueprint   Rig Blueprint     0.01 m3 
+Large Gravity Capacitor Upgrade II Blueprint    Rig Blueprint     0.01 m3 
+Large Ancillary Shield Booster Blueprint    Fueled Shield Booster Blueprint     0.01 m3 
+Curious Warp Matrix Filament Blueprint    Jump Filament Blueprint     0.01 m3 
+Cormorant Blueprint   Destroyer Blueprint     0.01 m3 
+Catalyst Blueprint    Destroyer Blueprint     0.01 m3 
+Capital Semiconductor Memory Cell II Blueprint    Rig Blueprint     0.01 m3 
+Capital Nanobot Accelerator II Blueprint    Rig Blueprint     0.01 m3 
+Capital Liquid Cooled Electronics II Blueprint    Rig Blueprint     0.01 m3 
+Capital Hybrid Locus Coordinator II Blueprint   Rig Blueprint     0.01 m3 
+Capital Gravity Capacitor Upgrade II Blueprint    Rig Blueprint     0.01 m3 
+Capital Explosive Armor Reinforcer II Blueprint   Rig Blueprint     0.01 m3 
+Capital Energy Discharge Elutriation II Blueprint   Rig Blueprint     0.01 m3 
+Capital Core Defense Charge Economizer II Blueprint   Rig Blueprint     0.01 m3 
+Capital Algid Energy Administrations Unit II Blueprint    Rig Blueprint     0.01 m3 
+Atron Blueprint   Frigate Blueprint     0.01 m3 
+'Yurt' Mobile Depot Blueprint   Mobile Depot Blueprint      0.01 m3 

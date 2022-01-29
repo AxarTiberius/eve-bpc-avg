@@ -11,7 +11,7 @@ if (!fs.existsSync('./data/eve.sqlite')) {
   process.exit(1)
 }
 
-var taskLimit = 64, sortIndex = 4, pageLimit = 1000, apiTimeout = 5000;
+var taskLimit = 64, sortIndex = 3, pageLimit = 1000, apiTimeout = 5000;
 
 // optional authentication
 var accessToken = null
@@ -19,7 +19,7 @@ var accessToken = null
 const csvHeaders = [
   'typeID',
   'invType.typeName',
-  'invType.description',
+  //'invType.description',
   'prices.length',
   'meanPrice',
   'medianPrice',
@@ -187,6 +187,9 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
   async.mapValues(results.blueprints, function (prices, typeID, done) {
     db.get('SELECT * FROM invTypes WHERE typeID = ?', [typeID], function (err, invType) {
       if (err) return done(err)
+      if (!invType) {
+        console.error('warning: invType not found: ', typeID)
+      }
       invType || (invType = {typeName: '', description: ''});
 
       var totalPrice = prices.reduce(function (prev, cur) {
@@ -214,7 +217,7 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
       rows.push([
         Number(typeID),
         invType.typeName,
-        invType.description,
+        // invType.description,
         prices.length,
         Math.round(meanPrice),
         medianPrice,
