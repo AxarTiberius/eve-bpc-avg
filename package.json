@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": "./eve-bpc-avg.sh",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +13,7 @@
     "ansi-colors": "^4.1.1",
     "async": "^3.2.3",
     "cli-progress": "^3.10.0",
+    "csv-stringify": "^6.0.5",
     "micro-request": "^666.0.10",
     "sqlite3": "^5.0.2"
   }

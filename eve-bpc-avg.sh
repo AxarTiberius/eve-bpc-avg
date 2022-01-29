@@ -1,28 +1,41 @@
+#!/usr/bin/env node
+
 var mr = require('micro-request')
 var async = require('async')
 var sqlite3 = require('sqlite3').verbose()
 var api_base = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
+var csvStringify = require('csv-stringify/sync').stringify
 if (!fs.existsSync('./data/eve.sqlite')) {
   console.error('Please run ./get-db.sh first')
   process.exit(1)
 }
 
-var taskLimit = 8, sortIndex = 4, pageLimit = 1000;
+var taskLimit = 64, sortIndex = 4, pageLimit = 1000, apiTimeout = 5000;
 
 // optional authentication
 var accessToken = null
 
-var hubs = {
+const csvHeaders = [
+  'typeID',
+  'invType.typeName',
+  'invType.description',
+  'prices.length',
+  'meanPrice',
+  'medianPrice',
+  'modePrice'
+]
+
+const hubs = {
   '10000002': 'The Forge',
 //  '10000043': 'Domain',
 //  '10000030': 'Heimatar',
 //  '10000032': 'Sinq Laison',
 //  '10000042': 'Metropolis'
 }
-var hub_ids = Object.keys(hubs)
+const hub_ids = Object.keys(hubs)
 
-var db = new sqlite3.Database('data/eve.sqlite')
+const db = new sqlite3.Database('data/eve.sqlite')
 
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');
@@ -42,42 +55,43 @@ function apiRequest (method, path, postData, onRes) {
     headers['Authorization'] = 'Bearer ' + accessToken
   }
   //console.log('api req ', method, path)
-  var req_start = new Date()
-  var reqUrl = api_base + path
-  var query = JSON.parse(JSON.stringify(postData))
-  mr[method.toLowerCase()](reqUrl, {headers, query}, function (err, resp, body) {
-    if (err) return onRes(err)
-    var total_time = new Date().getTime() - req_start
-    //console.log('completed', path, 'in', total_time, 'ms', resp.statusCode)
-    if (Buffer.isBuffer(body)) {
-      body = body.toString('utf8')
-    }
-    if (typeof body === 'string' && body.length) {
-      try {
-        body = JSON.parse(body)
+  const req_start = new Date()
+  const reqUrl = api_base + path
+  const query = JSON.parse(JSON.stringify(postData))
+  ;(function retry () {
+    mr[method.toLowerCase()](reqUrl, {headers, query, timeout: apiTimeout}, function (err, resp, body) {
+      if (err) {
+        if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
+          //console.error('warning: connection error for ' + path + ', retrying')
+          return retry()
+        }
+        return onRes(err)
       }
-      catch (e) {
-        console.error('unexpected api response: ' + body)
+      var total_time = new Date().getTime() - req_start
+      //console.log('completed', path, 'in', total_time, 'ms', resp.statusCode)
+      if (Buffer.isBuffer(body)) {
+        body = body.toString('utf8')
+      }
+      if (typeof body === 'string' && body.length) {
+        try {
+          body = JSON.parse(body)
+        }
+        catch (e) {
+          //console.error('unexpected api response: ' + body)
+          return retry()
+          body = {}
+        }
+      }
+      if (!body) {
         body = {}
       }
-    }
-    if (!body) {
-      body = {}
-    }
-    onRes(null, body, resp)
-  })
+      onRes(null, body, resp)
+    })
+  })()
 }
 
 var rows = [
-  [
-    'typeID',
-    'invType.typeName',
-    'invType.description',
-    'prices.length',
-    'meanPrice',
-    'medianPrice',
-    'modePrice'
-  ]
+  csvHeaders
 ], results = {blueprints: {}}
 
 async.reduce(hub_ids, null, function (_ignore, regionID, done) {
@@ -95,7 +109,9 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
     });
 
     apiRequest('GET', 'contracts/public/' + regionID + '/', {page, type: 1}, function (err, body) {
-      if (err) throw err
+      if (err) {
+        return pageCb(err)
+      }
       var fetchLength = body.length || 0;
       if (!fetchLength) return pageCb(null, 0)
       b1.start(body.length, 0, {
@@ -127,7 +143,9 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
       var subtasks = body.map(function (contract) {
         return function (contractDone) {
           apiRequest('GET', 'contracts/public/items/' + contract.contract_id + '/', function (err, body, resp) {
-            if (err) return cb(err)
+            if (err) {
+              return contractDone(err)
+            }
             // console.log('contract', contract)
             speedData.push(new Date().getTime())
             if (resp.statusCode === 204) {
@@ -159,16 +177,18 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
     })
   }, function (lastFetchLength, testCb) {
     page++
-    testCb(null, lastFetchLength === pageLimit)
+    testCb(null, false) // disable paging for testing lastFetchLength === pageLimit)
   }, function (err, results) {
     if (err) return done(err)
     done()
   })
 }, function (err) {
-  if (err) throw err
+  if (err) return done(err)
   async.mapValues(results.blueprints, function (prices, typeID, done) {
     db.get('SELECT * FROM invTypes WHERE typeID = ?', [typeID], function (err, invType) {
       if (err) return done(err)
+      invType || (invType = {typeName: '', description: ''});
+
       var totalPrice = prices.reduce(function (prev, cur) {
         return prev + cur
       }, 0)
@@ -192,7 +212,7 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
         }
       })
       rows.push([
-        typeID,
+        Number(typeID),
         invType.typeName,
         invType.description,
         prices.length,
@@ -209,10 +229,12 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
     file.once('finish', function () {
       console.log('wrote', './output.csv with', rows.length, 'rows')
       db.close()
+      process.exit(0)
     })
     rows.sort(function (cur, prev) {
       if (typeof cur[0] === 'string') {
         // header
+        //console.log('cur', cur)
         return -1
       }
       if (cur[sortIndex] > prev[sortIndex]) {
@@ -224,7 +246,7 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
       return 1
     })
     rows.forEach(function (row) {
-      file.write(row.join(',') + '\n')
+      file.write(csvStringify([row]))
     })
     file.end()
   })
