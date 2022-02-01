@@ -1,9 +1,1 @@
 /* humanstxt.org */
-
-/* TEAM */
-  Romel Perez
-  romelperez.com
-  Colombia
-
-  Mario Ordonez
-  Colombia
