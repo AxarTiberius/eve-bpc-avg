@@ -4,7 +4,6 @@ import {BleepsProvider} from '@arwes/bleeps';
 import {
   ArwesThemeProvider,
   Button,
-  Card,
   StylesBaseline,
   Text,
   TextField,
@@ -17,7 +16,7 @@ import {
 // End settings
 
 const SOUND_ASSEMBLE_URL = '/assets/sounds/assemble.mp3';
-const animatorGeneral = { duration: { enter: 2000, exit: 2000 } };
+const animatorGeneral = { duration: { enter: 1000, exit: 1000 } };
 const audioSettings = { common: { volume: 0.25 } };
 const playersSettings = { assemble: { src: [SOUND_ASSEMBLE_URL], loop: true } };
 const bleepsSettings = { assemble: { player: 'assemble' } };
@@ -26,7 +25,7 @@ const App = () => {
   const [activate, setActivate] = React.useState(true);
 
   React.useEffect(() => {
-    const timeout = setTimeout(() => setActivate(!activate), 20000);
+    const timeout = 0
     return () => clearTimeout(timeout);
   }, [activate]);
 
@@ -41,10 +40,9 @@ const App = () => {
         <AnimatorGeneralProvider animator={animatorGeneral}>
           <FrameHexagon
             animator={{ activate }}
-            inverted
             hover
           >
-            <div style={{ width: 600, height: 600 }} />
+            <div style={{ width: 300, height: 600 }} />
           </FrameHexagon>
         </AnimatorGeneralProvider>
       </BleepsProvider>
