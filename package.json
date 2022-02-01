@@ -2,16 +2,16 @@
   "name": "eve-bpc-avg",
   "version": "0.0.0",
   "description": "Collects current statistics about EVE Online blueprint copies found in contracts near trade hubs.",
-  "main": "index.js",
   "bin": "./eve-bpc-avg.sh",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "develop": "gatsby develop --host 0.0.0.0 --port 1339",
+    "build": "gatsby build"
   },
   "author": "Axar Tiberius",
   "license": "MIT",
   "dependencies": {
-    "ansi-colors": "^4.1.1",
     "async": "^3.2.3",
     "cli-progress": "^3.10.0",
     "csv": "^6.0.5",

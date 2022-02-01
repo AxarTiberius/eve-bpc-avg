@@ -1,0 +1,40 @@
+{
+  "name": "eve-bpc-avg-frontend",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Web-based front-end for EVE BPC Appraiser",
+  "author": "Axar Tiberius",
+  "license": "MIT",
+  "dependencies": {
+    "@arwes/animated": "https://gitpkg.now.sh/AxarTiberius/arwes/packages/animated?gitpkg",
+    "@arwes/animator": "https://gitpkg.now.sh/AxarTiberius/arwes/packages/animator?gitpkg",
+    "@arwes/bleeps": "https://gitpkg.now.sh/AxarTiberius/arwes/packages/bleeps?gitpkg",
+    "@arwes/core": "https://gitpkg.now.sh/AxarTiberius/arwes/packages/core?gitpkg",
+    "@arwes/design": "https://gitpkg.now.sh/AxarTiberius/arwes/packages/design?gitpkg",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.3",
+    "@emotion/react": "^11.7.1",
+    "animejs": "^3.2.1",
+    "howler": "^2.2.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --passWithNoTests",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
