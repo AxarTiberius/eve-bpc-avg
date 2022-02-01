@@ -30,6 +30,11 @@ const App = () => {
     return () => clearTimeout(timeout);
   }, [activate]);
 
+  const submitInv = () => {
+    console.log('submit inv')
+    return false
+  }
+
   return (
     <ArwesThemeProvider>
       <StylesBaseline styles={{
@@ -37,7 +42,7 @@ const App = () => {
         'body': globalStyles.body,
         '.arwes-text-field': { marginBottom: 20 },
         'form': {width: '750px', margin: '50px auto'},
-        'textarea': {'max-height': '500px', 'height': '500px'}
+        'textarea': {'maxHeight': '500px', 'height': '500px'}
       }} />
       <BleepsProvider
         audioSettings={audioSettings}
@@ -45,7 +50,7 @@ const App = () => {
         bleepsSettings={bleepsSettings}
       >
         <AnimatorGeneralProvider animator={animatorGeneral}>
-          <form>
+          <form onSubmit={event => { console.log(event); event.preventDefault(); return false} }>
             <FrameHexagon
               animator={{ activate }}
               hover
@@ -56,12 +61,13 @@ const App = () => {
                 placeholder='Paste EVE inventory here'
                 autoFocus
                 defaultValue=''
+                spellCheck={false}
                 style={{
                   'width': '700px',
-                  'min-height': '500px'
+                  'minHeight': '500px'
                 }}
               />
-              <Button FrameComponent={FrameCorners} style={{
+              <Button onClick={event => console.log(event)} FrameComponent={FrameCorners} style={{
                 'margin': 'auto',
                 'float': 'right'
               }}>
