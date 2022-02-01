@@ -7,7 +7,8 @@ import {
   StylesBaseline,
   Text,
   TextField,
-  FrameHexagon
+  FrameHexagon,
+  FrameCorners
 } from '@arwes/core';
 import {
   globalStyles
@@ -31,19 +32,40 @@ const App = () => {
 
   return (
     <ArwesThemeProvider>
+      <StylesBaseline styles={{
+        'body': globalStyles.body,
+        '.arwes-text-field': { marginBottom: 20 },
+        'form': {width: '60%', margin: '50px auto'},
+        'textarea': {'max-height': '500px', 'height': '500px'}
+      }} />
       <BleepsProvider
         audioSettings={audioSettings}
         playersSettings={playersSettings}
         bleepsSettings={bleepsSettings}
       >
-        <StylesBaseline />
         <AnimatorGeneralProvider animator={animatorGeneral}>
-          <FrameHexagon
-            animator={{ activate }}
-            hover
-          >
-            <div style={{ width: 300, height: 600 }} />
-          </FrameHexagon>
+          <form>
+            <FrameHexagon
+              animator={{ activate }}
+              hover
+            >
+              <TextField
+                multiline
+                placeholder='Paste EVE inventory here'
+                autoFocus
+                defaultValue=''
+                style={{
+                  'width': '700px',
+                  'min-height': '500px'
+                }}
+              />
+              <Button FrameComponent={FrameCorners} style={{
+                'margin': 'auto'
+              }}>
+                <Text>Appraise Contracts</Text>
+              </Button>
+            </FrameHexagon>
+          </form>
         </AnimatorGeneralProvider>
       </BleepsProvider>
     </ArwesThemeProvider>
