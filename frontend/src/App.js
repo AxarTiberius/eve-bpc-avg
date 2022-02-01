@@ -33,9 +33,10 @@ const App = () => {
   return (
     <ArwesThemeProvider>
       <StylesBaseline styles={{
+        'html': globalStyles.html,
         'body': globalStyles.body,
         '.arwes-text-field': { marginBottom: 20 },
-        'form': {width: '60%', margin: '50px auto'},
+        'form': {width: '750px', margin: '50px auto'},
         'textarea': {'max-height': '500px', 'height': '500px'}
       }} />
       <BleepsProvider
@@ -48,6 +49,7 @@ const App = () => {
             <FrameHexagon
               animator={{ activate }}
               hover
+              inverted
             >
               <TextField
                 multiline
@@ -60,7 +62,8 @@ const App = () => {
                 }}
               />
               <Button FrameComponent={FrameCorners} style={{
-                'margin': 'auto'
+                'margin': 'auto',
+                'float': 'right'
               }}>
                 <Text>Appraise Contracts</Text>
               </Button>
