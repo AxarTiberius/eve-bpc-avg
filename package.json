@@ -12,6 +12,7 @@
   "author": "Axar Tiberius",
   "license": "MIT",
   "dependencies": {
+    "ansi-colors": "^4.1.1",
     "async": "^3.2.3",
     "cli-progress": "^3.10.0",
     "csv": "^6.0.5",

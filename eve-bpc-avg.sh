@@ -6,10 +6,12 @@ var sqlite3 = require('sqlite3').verbose()
 var api_base = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
 var csvStringify = require('csv-stringify/sync').stringify
+/*
 if (!fs.existsSync('./data/eve.sqlite')) {
   console.error('Please run ./get-db.sh first')
   process.exit(1)
 }
+*/
 
 var taskLimit = 64, sortIndex = 3, pageLimit = 1000, apiTimeout = 5000;
 
@@ -35,7 +37,7 @@ const hubs = {
 }
 const hub_ids = Object.keys(hubs)
 
-const db = new sqlite3.Database('data/eve.sqlite')
+const db = new sqlite3.Database('eve-bpcs.sqlite')
 
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');
