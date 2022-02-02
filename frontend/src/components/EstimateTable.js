@@ -1,10 +1,11 @@
 import React from 'react'
 import {Table} from '@arwes/core'
 
+// TODO: Update this to use new estimate fields
 const headers = [
   { id: 'typeID', data: 'typeID' },
   { id: 'name', data: 'Name' },
-  { id: 'contracts', data: '# Contracts' },
+  { id: 'soloContracts', data: '# Solo' },
   { id: 'meanPrice_human', data: 'Price Avg.' }
 ];
 const columnWidths = ['10%', '60%', '10%', '20%'];

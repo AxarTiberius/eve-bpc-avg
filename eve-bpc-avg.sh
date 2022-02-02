@@ -13,19 +13,28 @@ if (!fs.existsSync('./data/eve.sqlite')) {
 }
 */
 
-var taskLimit = 64, sortIndex = 3, pageLimit = 1000, apiTimeout = 5000;
+var taskLimit = 64, sortIndex = 14, pageLimit = 1000, apiTimeout = 5000;
 
 // optional authentication
 var accessToken = null
 
 const csvHeaders = [
   'typeID',
-  'invType.typeName',
+  'typeName',
   //'invType.description',
-  'prices.length',
-  'meanPrice',
-  'medianPrice',
-  'modePrice'
+  'soloContracts',
+  'meanSoloPrice',
+  'medianSoloPrice',
+  'modeSoloPrice',
+  'minSoloPrice',
+  'maxSoloPrice',
+  'packageContracts',
+  'meanPackagePrice',
+  'medianPackagePrice',
+  'modePackagePrice',
+  'minPackagePrice',
+  'maxPackagePrice',
+  'minPrice'
 ]
 
 const hubs = {
@@ -94,7 +103,7 @@ function apiRequest (method, path, postData, onRes) {
 
 var rows = [
   csvHeaders
-], results = {blueprints: {}}
+], results = {items: {}}
 
 async.reduce(hub_ids, null, function (_ignore, regionID, done) {
   // type: 1 is item_exchange
@@ -157,12 +166,19 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
               })
               return contractDone()
             }
-            if (body.length === 1 && body[0].is_blueprint_copy && body[0].is_included) {
-              var bpc = body[0]
-              var bpc_key = '' + bpc.type_id
-              results.blueprints[bpc_key] || (results.blueprints[bpc_key] = []);
-              results.blueprints[bpc_key].push(contract.price)
-            }
+            var items = (body && body.forEach) ? body : [];
+            items.forEach(function (item) {
+              var itemKey = '' + item.type_id
+              if (item.is_included) {
+                results.items[itemKey] || (results.items[itemKey] = {soloPrices: [], packagePrices: []})
+                if (body.length === 1) {
+                  results.items[itemKey].soloPrices.push(contract.price / item.quantity);
+                }
+                else {
+                  results.items[itemKey].packagePrices.push(contract.price / item.quantity);
+                }
+              }
+            })
             b1.increment(1, {
               speed: getTps() + ' ops/sec'
             })
@@ -186,46 +202,109 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
   })
 }, function (err) {
   if (err) return done(err)
-  async.mapValues(results.blueprints, function (prices, typeID, done) {
+  async.mapValues(results.items, function (item, typeID, done) {
     db.get('SELECT * FROM invTypes WHERE typeID = ?', [typeID], function (err, invType) {
       if (err) return done(err)
       if (!invType) {
-        console.error('warning: invType not found: ', typeID)
+        // console.error('warning: invType not found: ', typeID)
+        apiRequest('GET', 'universe/types/' + typeID + '/', function (err, body, resp) {
+          if (err) return done(err)
+          if (!body || !body.name) {
+            console.error('warning: invType lookup failed: ', typeID)
+            return done()
+          }
+          withInv({typeID: typeID, typeName: body.name, description: body.description})
+        })
       }
-      invType || (invType = {typeName: '', description: ''});
+      else {
+        withInv(invType)
+      }
 
-      var totalPrice = prices.reduce(function (prev, cur) {
-        return prev + cur
-      }, 0)
-      var meanPrice = totalPrice / prices.length
-      var medianPrice = prices[0]
-      if (prices.length > 1) {
-        var midPoint = Math.floor(prices.length / 2)
-        medianPrice = prices[midPoint]
-      }
-      var occur = {}
-      prices.forEach(function (price) {
-        var k = price + ''
-        if (!occur[k]) occur[k] = 0;
-        occur[k]++
-      })
-      var maxOccur = 0, modePrice = 0;
-      Object.keys(occur).forEach(function (k) {
-        if (occur[k] > maxOccur) {
-          maxOccur = occur[k]
-          modePrice = Number(k)
+      function withInv (invType) {
+        var totalSoloPrice = item.soloPrices.reduce(function (prev, cur) {
+          return prev + cur
+        }, 0)
+        var meanSoloPrice = item.soloPrices.length ? totalSoloPrice / item.soloPrices.length : ''
+        var medianSoloPrice = item.soloPrices.length ? item.soloPrices[0] : ''
+        function onlyUnique (value, index, self) {
+          return self.indexOf(value) === index;
         }
-      })
-      rows.push([
-        Number(typeID),
-        invType.typeName,
-        // invType.description,
-        prices.length,
-        Math.round(meanPrice),
-        medianPrice,
-        modePrice
-      ])
-      done()
+        var uniqueSolo = item.soloPrices.filter(onlyUnique);
+        if (uniqueSolo.length > 1) {
+          var midPoint = Math.floor(uniqueSolo.length / 2)
+          medianSoloPrice = uniqueSolo[midPoint]
+        }
+        var soloOccur = {}
+        item.soloPrices.forEach(function (price) {
+          var k = price + ''
+          if (!soloOccur[k]) soloOccur[k] = 0;
+          soloOccur[k]++
+        })
+        var maxSoloOccur = 0, modeSoloPrice = 0;
+        Object.keys(soloOccur).forEach(function (k) {
+          if (soloOccur[k] > maxSoloOccur) {
+            maxSoloOccur = soloOccur[k]
+            modeSoloPrice = Number(k)
+          }
+        })
+        var minSoloPrice = item.soloPrices.length ? Math.min.apply(Math, item.soloPrices) : ''
+        var maxSoloPrice = item.soloPrices.length ? Math.max.apply(Math, item.soloPrices) : ''
+
+        var totalPackagePrice = item.packagePrices.reduce(function (prev, cur) {
+          return prev + cur
+        }, 0)
+        var meanPackagePrice = item.packagePrices.length ? totalPackagePrice / item.packagePrices.length : ''
+        var medianPackagePrice = item.packagePrices.length ? item.packagePrices[0] : ''
+        var uniquePackage = item.packagePrices.filter(onlyUnique);
+        if (uniquePackage.length > 1) {
+          var midPoint = Math.floor(uniquePackage.length / 2)
+          medianPackagePrice = uniquePackage[midPoint]
+        }
+        var packageOccur = {}
+        item.packagePrices.forEach(function (price) {
+          var k = price + ''
+          if (!packageOccur[k]) packageOccur[k] = 0;
+          packageOccur[k]++
+        })
+        var maxPackageOccur = 0, modePackagePrice = 0;
+        Object.keys(packageOccur).forEach(function (k) {
+          if (packageOccur[k] > maxPackageOccur) {
+            maxPackageOccur = packageOccur[k]
+            modePackagePrice = Number(k)
+          }
+        })
+        var minPackagePrice = item.packagePrices.length ? Math.min.apply(Math, item.packagePrices) : ''
+        var maxPackagePrice = item.packagePrices.length ? Math.max.apply(Math, item.packagePrices) : ''
+
+        var minPrice = minSoloPrice
+        if (!minPrice) {
+          minPrice = minPackagePrice
+        }
+
+        function csvNumber (num) {
+          return typeof num === 'number' ? Math.round(num) : ''
+        }
+
+        rows.push([
+          Number(typeID),
+          invType.typeName,
+          // invType.description,
+          item.soloPrices.length,
+          csvNumber(meanSoloPrice),
+          csvNumber(medianSoloPrice),
+          csvNumber(modeSoloPrice),
+          csvNumber(minSoloPrice),
+          csvNumber(maxSoloPrice),
+          item.packagePrices.length,
+          csvNumber(meanPackagePrice),
+          csvNumber(medianPackagePrice),
+          csvNumber(modePackagePrice),
+          csvNumber(minPackagePrice),
+          csvNumber(maxPackagePrice),
+          csvNumber(minPrice)
+        ])
+        done()
+      }
     })
   }, function (err) {
     if (err) throw err

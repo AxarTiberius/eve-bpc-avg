@@ -25,8 +25,9 @@ module.exports = function (pasteText, cb) {
       line = line.trim()
       return line.length > 0
     })
+    // TODO: update all this to use new csv columns
     var estimate = {
-      totalAverageWorth: 0,
+      totalWorth: 0,
       itemsProcessed: 0,
       itemsNotFound: 0,
       itemsFound: 0,
