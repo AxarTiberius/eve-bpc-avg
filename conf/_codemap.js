@@ -4,7 +4,7 @@ module.exports = {
   _folder: 'conf',
 
   // site overrides
-  '@site.port': process.env.PORT,
+  '@site.port': process.env.PORT || 1339,
   '@site.title': 'EVE Blueprint Copy Average',
 
   'middleware.buffet{}': {

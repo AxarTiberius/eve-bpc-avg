@@ -1,6 +1,5 @@
 data/
 node_modules
 eve-data.tar.gz
-output.csv
 .~*
 .cache

@@ -1,6 +1,6 @@
 import React from 'react';
 import {AnimatorGeneralProvider} from '@arwes/animator';
-import {BleepsProvider} from '@arwes/bleeps';
+import {BleepsProvider, useBleeps} from '@arwes/bleeps';
 import {
   ArwesThemeProvider,
   Button,
@@ -11,28 +11,54 @@ import {
   FrameCorners
 } from '@arwes/core';
 import {
-  globalStyles
+  globalStyles,
+  audioSettings,
+  playersSettings,
+  bleepsSettings
 } from './settings'
+
+import useEstimates from './hooks/useEstimates'
+import EstimateTable from './components/EstimateTable'
 
 // End settings
 
-const SOUND_ASSEMBLE_URL = '/assets/sounds/assemble.mp3';
 const animatorGeneral = { duration: { enter: 1000, exit: 1000 } };
-const audioSettings = { common: { volume: 0.25 } };
-const playersSettings = { assemble: { src: [SOUND_ASSEMBLE_URL], loop: true } };
-const bleepsSettings = { assemble: { player: 'assemble' } };
+
+const Submit = ({ children }) => {
+  const bleeps  = useBleeps();
+  const onClick = () => bleeps.readout.play();
+  return (
+    <Button onClick={onClick} FrameComponent={FrameCorners} style={{
+      'margin': 'auto',
+      'float': 'right'
+    }}>
+      <Text>{children}</Text>
+    </Button>
+  );
+}
 
 const App = () => {
   const [activate, setActivate] = React.useState(true);
+
+  const [paste, setPaste] = React.useState({})
+  const [estimate, setEstimate] = React.useState({items: []})
 
   React.useEffect(() => {
     const timeout = 0
     return () => clearTimeout(timeout);
   }, [activate]);
 
-  const submitInv = () => {
-    console.log('submit inv')
-    return false
+  const onResponse = (err, response) => {
+    if (err) {
+      console.error('error', err)
+      return;
+    }
+    setEstimate(response)
+  }
+  const {submitEstimate} = useEstimates(paste, onResponse)
+
+  const onPasteChange = (e) => {
+    setPaste({paste: e.target.value})
   }
 
   return (
@@ -50,7 +76,7 @@ const App = () => {
         bleepsSettings={bleepsSettings}
       >
         <AnimatorGeneralProvider animator={animatorGeneral}>
-          <form onSubmit={event => { console.log(event); event.preventDefault(); return false} }>
+          <form onSubmit={submitEstimate}>
             <FrameHexagon
               animator={{ activate }}
               hover
@@ -62,24 +88,21 @@ const App = () => {
                 autoFocus
                 defaultValue=''
                 spellCheck={false}
+                inputProps={{id: 'paste'}}
+                onChange={onPasteChange}
                 style={{
                   'width': '700px',
                   'minHeight': '500px'
                 }}
               />
-              <Button onClick={event => console.log(event)} FrameComponent={FrameCorners} style={{
-                'margin': 'auto',
-                'float': 'right'
-              }}>
-                <Text>Appraise Contracts</Text>
-              </Button>
+              <Submit>Appraise Contracts</Submit>
             </FrameHexagon>
           </form>
+          <EstimateTable estimate={estimate} />
         </AnimatorGeneralProvider>
       </BleepsProvider>
     </ArwesThemeProvider>
   );
 };
-
 
 export default App
