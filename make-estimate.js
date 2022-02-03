@@ -1,7 +1,8 @@
 const csv = require('csv')
 var hn = require('human-number')
+var assert = require('assert')
 const humanNumber = function (num) {
-  return hn(num, function (n) { return Math.round(Number.parseFloat(n)) })
+  return String(hn(num, function (n) { return Math.round(Number.parseFloat(n)) }))
 }
 
 module.exports = function (pasteText, cb) {
@@ -10,69 +11,86 @@ module.exports = function (pasteText, cb) {
   var csvStream = require('fs').createReadStream('./output.csv', {flags: 'r'})
   var i = 0
   var nameIndex = {}
+  var headers;
   parser.on('readable', function() {
     let record;
     while ((record = parser.read()) !== null) {
-      //console.log('record', record)
-      if (i++ === 0) continue;
-      nameIndex[record[1]] = record
+      if (i++ === 0) {
+        headers = record
+        assert(headers)
+        assert.strictEqual(headers.length, 15)
+        headers.forEach(function (header, idx) {
+          assert(header, idx);
+        })
+        continue
+      }
+      assert.strictEqual(record.length, headers.length)
+      var item = {}
+      headers.forEach(function (header, idx) {
+        item[header] = record[idx]
+      })
+      nameIndex[item.typeName] = item
     }
   });
   parser.on('end', function () {
     //console.log('added', i - 1, 'docs')
     var lines = pasteText.split(/\r?\n/)
-    lines = lines.filter(function (line) {
-      line = line.trim()
-      return line.length > 0
+    lines = lines.map(function (line) {
+      return line.trim()
     })
-    // TODO: update all this to use new csv columns
     var estimate = {
-      totalWorth: 0,
+      totalMarketValue: 0,
       itemsProcessed: 0,
       itemsNotFound: 0,
       itemsFound: 0,
-      items: {}
+      itemsByID: {},
+      items: []
     }
     lines.forEach(function (line) {
       var line_vars = line.split('  ')
       if (!line_vars || !line_vars.length) return;
       var name = line_vars[0].trim()
       if (!name || !name.length) return;
+      var quantity = Number((line_vars[1] || '1').trim())
       estimate.itemsProcessed++
       var item = nameIndex[name]
       if (!item) {
         estimate.itemsNotFound++
-        console.error('Item not found: "' + name + '"')
+        console.error('warning: Item not found: "' + name + '"')
         return;
       }
-      estimate.itemsFound++
-      estimate.totalAverageWorth += Number(item[3])
-      if (!estimate.items[name]) {
-        estimate.items[name] = {
-          typeID: Number(item[0].trim()),
-          name: name,
-          contracts: Number(item[2].trim()),
-          meanPrice: Number(item[3].trim()),
-          medianPrice: Number(item[4].trim()),
-          modePrice: Number(item[5].trim()),
-          itemsFound: 0
-        }
+      var est
+      if (!estimate.itemsByID[item.typeID]) {
+        est = estimate.itemsByID[item.typeID] = JSON.parse(JSON.stringify(item))
+        Object.keys(est).forEach(function (k) {
+          est[k] = est[k].trim()
+          if (est[k] === '') {
+            est[k] = null
+            est[k + '_human'] = ''
+          }
+          else if (est[k].match(/^[0-9\.]+$/)) {
+            est[k] = Number(est[k])
+            est[k + '_human'] = humanNumber(est[k])
+          }
+        })
+        est.itemsFound = 0
+        est.totalMarketValue = 0
       }
-      estimate.items[name].itemsFound++
+      else {
+        est = estimate.itemsByID[item.typeID]
+      }
+      est.itemsFound += quantity
+      estimate.itemsFound += quantity
+      est.totalMarketValue += Number(item.minPrice) * quantity
+      estimate.totalMarketValue += est.totalMarketValue
     })
-    estimateItemLookup = estimate.items;
-    estimate.items = Object.keys(estimateItemLookup).map(function (name) {
-      estimateItemLookup[name].meanPrice_human = humanNumber(estimateItemLookup[name].meanPrice) + ' ISK'
-      estimateItemLookup[name].medianPrice_human = humanNumber(estimateItemLookup[name].medianPrice) + ' ISK'
-      estimateItemLookup[name].modePrice_human = humanNumber(estimateItemLookup[name].modePrice) + ' ISK'
-      return estimateItemLookup[name]
-    })
-    estimate.items.sort(function (a, b) {
-      if (a.meanPrice > b.meanPrice) return -1;
-      if (a.meanPrice === b.meanPrice) return 0;
+    estimate.items = Object.values(estimate.itemsByID).sort(function (a, b) {
+      if (a.minPrice > b.minPrice) return -1;
+      if (a.minPrice === b.minPrice) return 0;
       return 1;
     })
-    estimate.totalAverageWorth_human = humanNumber(estimate.totalAverageWorth) + ' ISK'
+    delete estimate.itemsByID
+    estimate.totalMarketValue_human = humanNumber(estimate.totalMarketValue)
     cb(null, estimate)
   })
   parser.once('error', function(err) {

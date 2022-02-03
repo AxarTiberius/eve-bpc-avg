@@ -13,7 +13,13 @@ if (!fs.existsSync('./data/eve.sqlite')) {
 }
 */
 
-var taskLimit = 64, sortIndex = 14, pageLimit = 1000, apiTimeout = 5000;
+var
+  taskLimit =         64,
+  sortIndex =         14,
+  pageLimit =         1000,
+  apiTimeout =        5000,
+  itemLookupLimit =   64,
+  itemLookupTimeout = 64
 
 // optional authentication
 var accessToken = null
@@ -38,7 +44,7 @@ const csvHeaders = [
 ]
 
 const hubs = {
-  '10000002': 'The Forge',
+//  '10000002': 'The Forge',
   '10000043': 'Domain',
   '10000030': 'Heimatar',
   '10000032': 'Sinq Laison',
@@ -202,7 +208,38 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
   })
 }, function (err) {
   if (err) return done(err)
-  async.mapValues(results.items, function (item, typeID, done) {
+  const b1 = new cliProgress.SingleBar({
+    format: 'Looking up items... |' + colors.magenta('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
+    barCompleteChar: '\u2588',
+    barIncompleteChar: '\u2591',
+    hideCursor: true
+  });
+  b1.start(results.items.length, 0, {
+    speed: 'calculating...'
+  });
+  var speedData = []
+  function getTps (lookback) {
+    lookback || (lookback = 5000);
+    var currentOp = null
+    var now = new Date().getTime()
+    var lookbackOps = 0
+    var idxBound = null
+    var reverseSpeedData = speedData.reverse()
+    for (var idx = 0; idx < reverseSpeedData.length; idx++) {
+      currentOp = reverseSpeedData[idx]
+      if (currentOp < now - lookback) {
+        idxBound = idx;
+        break;
+      }
+      lookbackOps++
+    }
+    if (typeof idxBound === 'number' && speedData.length > idxBound) {
+      //speedData.splice(0, idxBound)
+    }
+    var avgOps = lookbackOps / (lookback / 1000)
+    return avgOps
+  }
+  async.mapValuesLimit(results.items, itemLookupLimit, function (item, typeID, done) {
     db.get('SELECT * FROM invTypes WHERE typeID = ?', [typeID], function (err, invType) {
       if (err) return done(err)
       if (!invType) {
@@ -210,8 +247,12 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
         apiRequest('GET', 'universe/types/' + typeID + '/', function (err, body, resp) {
           if (err) return done(err)
           if (!body || !body.name) {
+            console.log('fail', resp.statusCode, resp.headers)
             console.error('warning: invType lookup failed: ', typeID)
-            return done()
+            b1.increment(1, {
+              speed: getTps() + ' ops/sec'
+            })
+            return setTimeout(done, itemLookupTimeout)
           }
           withInv({typeID: typeID, typeName: body.name, description: body.description})
         })
@@ -303,11 +344,16 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
           csvNumber(maxPackagePrice),
           csvNumber(minPrice)
         ])
-        done()
+        b1.increment(1, {
+          speed: getTps() + ' ops/sec'
+        })
+        speedData.push(new Date().getTime())
+        setTimeout(done, itemLookupTimeout)
       }
     })
   }, function (err) {
     if (err) throw err
+    b1.stop();
     console.log('data collected! writing CSV...')
     var file = fs.createWriteStream('./output.csv')
     file.once('finish', function () {
