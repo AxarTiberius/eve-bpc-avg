@@ -44,7 +44,7 @@ const csvHeaders = [
 ]
 
 const hubs = {
-//  '10000002': 'The Forge',
+  '10000002': 'The Forge',
   '10000043': 'Domain',
   '10000030': 'Heimatar',
   '10000032': 'Sinq Laison',
@@ -281,7 +281,7 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
           if (!soloOccur[k]) soloOccur[k] = 0;
           soloOccur[k]++
         })
-        var maxSoloOccur = 0, modeSoloPrice = 0;
+        var maxSoloOccur = 0, modeSoloPrice = null;
         Object.keys(soloOccur).forEach(function (k) {
           if (soloOccur[k] > maxSoloOccur) {
             maxSoloOccur = soloOccur[k]
@@ -307,7 +307,7 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
           if (!packageOccur[k]) packageOccur[k] = 0;
           packageOccur[k]++
         })
-        var maxPackageOccur = 0, modePackagePrice = 0;
+        var maxPackageOccur = 0, modePackagePrice = null;
         Object.keys(packageOccur).forEach(function (k) {
           if (packageOccur[k] > maxPackageOccur) {
             maxPackageOccur = packageOccur[k]
