@@ -40,16 +40,12 @@ const csvHeaders = [
   'modePackagePrice',
   'minPackagePrice',
   'maxPackagePrice',
-  'minPrice'
+  'minPrice',
+  'minPriceRegionID',
+  'minPriceRegionName'
 ]
 
-const hubs = {
-  '10000002': 'The Forge',
-  '10000043': 'Domain',
-  '10000030': 'Heimatar',
-  '10000032': 'Sinq Laison',
-  '10000042': 'Metropolis'
-}
+const hubs = require('./regions.json')
 const hub_ids = Object.keys(hubs)
 
 const db = new sqlite3.Database('eve-bpcs.sqlite')
@@ -187,12 +183,14 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
               items.forEach(function (item) {
                 var itemKey = '' + item.type_id
                 if (item.is_included) {
-                  results.items[itemKey] || (results.items[itemKey] = {soloPrices: [], packagePrices: []})
+                  results.items[itemKey] || (results.items[itemKey] = {soloPrices: [], packagePrices: [], soloRegions: [], packageRegions: []})
                   if (body.length === 1) {
-                    results.items[itemKey].soloPrices.push(contract.price / item.quantity);
+                    results.items[itemKey].soloPrices.push(contract.price / item.quantity)
+                    results.items[itemKey].soloRegions.push(regionID)
                   }
                   else {
-                    results.items[itemKey].packagePrices.push(contract.price / item.quantity);
+                    results.items[itemKey].packagePrices.push(contract.price / item.quantity)
+                    results.items[itemKey].packageRegions.push(regionID)
                   }
                 }
                 else {
@@ -200,10 +198,10 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
                 }
               })
               if (contract.reward) {
-                console.error('reward for all included?', contract, items)
+                console.error('reward for all included?', regionID, contract, items)
               }
               if (!contract.price) {
-                console.error('free??', contract, items)
+                console.error('free??', regionID, contract, items)
               }
             }
             b1.increment(1, {
@@ -229,13 +227,15 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
   })
 }, function (err) {
   if (err) return done(err)
+  var numItems = Object.keys(results.items).length
+  console.error('Found', numItems, 'unique items.')
   const b1 = new cliProgress.SingleBar({
-    format: 'Looking up items... |' + colors.magenta('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
+    format: 'Looking up items... |' + colors.yellow('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true
   });
-  b1.start(results.items.length, 0, {
+  b1.start(numItems, 0, {
     speed: 'calculating...'
   });
   var speedData = []
@@ -338,19 +338,42 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
         var minPackagePrice = item.packagePrices.length ? Math.min.apply(Math, item.packagePrices) : ''
         var maxPackagePrice = item.packagePrices.length ? Math.max.apply(Math, item.packagePrices) : ''
 
-        var minPrice = ''
-        if (minSoloPrice || minPackagePrice) {
+        var minPrice = null, minPriceRegionID, minPriceRegionName
+        //console.log('item', item)
+        var fromSolo = false
+        if (minSoloPrice !== '' || minPackagePrice !== '') {
           if (minSoloPrice !== '' && minPackagePrice !== '') {
-            minPrice = Math.min(minSoloPrice, minPackagePrice)
+            if (minSoloPrice <= minPackagePrice) {
+              minPrice = minSoloPrice
+              fromSolo = true
+            }
+            else {
+              minPrice = minPackagePrice
+            }
           }
           else if (minSoloPrice !== '' && minPackagePrice === '') {
             minPrice = minSoloPrice
+            fromSolo = true
           }
           else if (minPackagePrice !== '' && minSoloPrice === '') {
             minPrice = minPackagePrice
           }
         }
-
+        var minPriceIdx
+        if (fromSolo) {
+          minPriceIdx = item.soloPrices.indexOf(minPrice)
+          minPriceRegionID = item.soloRegions[minPriceIdx]
+        }
+        else {
+          minPriceIdx = item.packagePrices.indexOf(minPrice)
+          minPriceRegionID = item.packageRegions[minPriceIdx]
+        }
+        minPriceRegionName = hubs[minPriceRegionID]
+        /*
+        console.log('minPriceIdx', minPrice, minPriceIdx)
+        console.log('minPriceRegionID', minPriceRegionID)
+        console.log('minPriceRegionName', minPriceRegionName)
+        */
         function csvNumber (num) {
           return typeof num === 'number' ? Math.round(num) : ''
         }
@@ -371,7 +394,9 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
           csvNumber(modePackagePrice),
           csvNumber(minPackagePrice),
           csvNumber(maxPackagePrice),
-          csvNumber(minPrice)
+          csvNumber(minPrice),
+          minPriceRegionID,
+          minPriceRegionName
         ])
         b1.increment(1, {
           speed: getTps() + ' ops/sec'

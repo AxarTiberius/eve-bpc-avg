@@ -20,7 +20,7 @@ module.exports = function (pasteText, cb) {
       if (i++ === 0) {
         headers = record
         assert(headers)
-        assert.strictEqual(headers.length, 15)
+        assert.strictEqual(headers.length, 17)
         headers.forEach(function (header, idx) {
           assert(header, idx);
         })

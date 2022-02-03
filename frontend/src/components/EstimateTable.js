@@ -11,9 +11,10 @@ const headers = [
   { id: 'minPackagePrice_human', data: 'Min. Package' },
   { id: 'minPrice_human', data: 'Market Value' },
   { id: 'itemsFound', data: 'Items Found' },
-  { id: 'totalMarketValue_human', data: 'Total Market Value' }
+  { id: 'totalMarketValue_human', data: 'Total Market Value' },
+  { id: 'minPriceRegionName', data: 'Region' }
 ];
-const columnWidths = ['7%', '44%', '7%', '7%', '7%', '7%', '7%', '7%', '7%'];
+const columnWidths = ['6%', '46%', '6%', '6%', '6%', '6%', '6%', '6%', '6%', '6%'];
 
 const EstimateItems = (props) => {
   const [activate, setActivate] = React.useState(true);
