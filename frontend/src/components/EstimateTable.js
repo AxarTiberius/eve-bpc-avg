@@ -13,7 +13,7 @@ const headers = [
   { id: 'itemsFound', data: 'Items Found' },
   { id: 'totalMarketValue_human', data: 'Total Market Value' }
 ];
-const columnWidths = ['5%', '25%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'];
+const columnWidths = ['7%', '44%', '7%', '7%', '7%', '7%', '7%', '7%', '7%'];
 
 const EstimateItems = (props) => {
   const [activate, setActivate] = React.useState(true);

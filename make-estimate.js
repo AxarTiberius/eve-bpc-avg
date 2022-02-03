@@ -2,8 +2,10 @@ const csv = require('csv')
 var hn = require('human-number')
 var assert = require('assert')
 const humanNumber = function (num) {
-  return String(hn(num, function (n) { return Math.round(Number.parseFloat(n)) }))
+  return String(hn(num, function (n) { return Math.round(Number.parseFloat(n)) })).toLowerCase()
 }
+
+var pasteParser = require('./parser');
 
 module.exports = function (pasteText, cb) {
   var parser = csv.parse()
@@ -34,10 +36,7 @@ module.exports = function (pasteText, cb) {
   });
   parser.on('end', function () {
     //console.log('added', i - 1, 'docs')
-    var lines = pasteText.split(/\r?\n/)
-    lines = lines.map(function (line) {
-      return line.trim()
-    })
+    var pasteItems = pasteParser(pasteText)
     var estimate = {
       totalMarketValue: 0,
       itemsProcessed: 0,
@@ -46,17 +45,12 @@ module.exports = function (pasteText, cb) {
       itemsByID: {},
       items: []
     }
-    lines.forEach(function (line) {
-      var line_vars = line.split('  ')
-      if (!line_vars || !line_vars.length) return;
-      var name = line_vars[0].trim()
-      if (!name || !name.length) return;
-      var quantity = Number((line_vars[1] || '1').trim())
+    pasteItems.forEach(function (pasteItem) {
       estimate.itemsProcessed++
-      var item = nameIndex[name]
+      var item = nameIndex[pasteItem.name]
       if (!item) {
         estimate.itemsNotFound++
-        console.error('warning: Item not found: "' + name + '"')
+        console.error('warning: Item not found: "' + pasteItem.name + '"')
         return;
       }
       var est
@@ -79,9 +73,10 @@ module.exports = function (pasteText, cb) {
       else {
         est = estimate.itemsByID[item.typeID]
       }
-      est.itemsFound += quantity
-      estimate.itemsFound += quantity
-      est.totalMarketValue += Number(item.minPrice) * quantity
+      est.itemsFound += pasteItem.quantity
+      estimate.itemsFound += pasteItem.quantity
+      est.totalMarketValue += Number(item.minPrice) * pasteItem.quantity
+      est.totalMarketValue_human = humanNumber(est.totalMarketValue)
       estimate.totalMarketValue += est.totalMarketValue
     })
     estimate.items = Object.values(estimate.itemsByID).sort(function (a, b) {

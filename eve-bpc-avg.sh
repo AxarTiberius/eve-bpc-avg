@@ -172,19 +172,40 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
               })
               return contractDone()
             }
+            if (contract.type !== 'item_exchange') {
+              // only process item exchanges
+              b1.increment(1, {
+                speed: getTps() + ' ops/sec'
+              })
+              return contractDone()
+            }
             var items = (body && body.forEach) ? body : [];
-            items.forEach(function (item) {
-              var itemKey = '' + item.type_id
-              if (item.is_included) {
-                results.items[itemKey] || (results.items[itemKey] = {soloPrices: [], packagePrices: []})
-                if (body.length === 1) {
-                  results.items[itemKey].soloPrices.push(contract.price / item.quantity);
+            var all_included = items.every(function (item) {
+              return item.is_included
+            })
+            if (all_included) {
+              items.forEach(function (item) {
+                var itemKey = '' + item.type_id
+                if (item.is_included) {
+                  results.items[itemKey] || (results.items[itemKey] = {soloPrices: [], packagePrices: []})
+                  if (body.length === 1) {
+                    results.items[itemKey].soloPrices.push(contract.price / item.quantity);
+                  }
+                  else {
+                    results.items[itemKey].packagePrices.push(contract.price / item.quantity);
+                  }
                 }
                 else {
-                  results.items[itemKey].packagePrices.push(contract.price / item.quantity);
+                  all_included = false
                 }
+              })
+              if (contract.reward) {
+                console.error('reward for all included?', contract, items)
               }
-            })
+              if (!contract.price) {
+                console.error('free??', contract, items)
+              }
+            }
             b1.increment(1, {
               speed: getTps() + ' ops/sec'
             })
@@ -317,9 +338,17 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
         var minPackagePrice = item.packagePrices.length ? Math.min.apply(Math, item.packagePrices) : ''
         var maxPackagePrice = item.packagePrices.length ? Math.max.apply(Math, item.packagePrices) : ''
 
-        var minPrice = minSoloPrice
-        if (!minPrice) {
-          minPrice = minPackagePrice
+        var minPrice = ''
+        if (minSoloPrice || minPackagePrice) {
+          if (minSoloPrice !== '' && minPackagePrice !== '') {
+            minPrice = Math.min(minSoloPrice, minPackagePrice)
+          }
+          else if (minSoloPrice !== '' && minPackagePrice === '') {
+            minPrice = minSoloPrice
+          }
+          else if (minPackagePrice !== '' && minSoloPrice === '') {
+            minPrice = minPackagePrice
+          }
         }
 
         function csvNumber (num) {
