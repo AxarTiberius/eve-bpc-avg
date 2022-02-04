@@ -13,7 +13,7 @@ module.exports = {
     dot: false
   },
   'middleware.buffet.root{}': {
-    globs: 'public/**/*'
+    globs: 'frontend/build/**/*'
   },
   '@middleware.session': {
     cookie: {
