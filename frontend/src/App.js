@@ -68,7 +68,8 @@ const App = () => {
         'body': globalStyles.body,
         '.arwes-text-field': { marginBottom: 20 },
         'form': {width: '750px', margin: '50px auto'},
-        'textarea': {'maxHeight': '500px', 'height': '500px'}
+        'textarea': {'maxHeight': '500px', 'height': '500px'},
+        '.hilite': {'color': '#F8F800'},
       }} />
       <BleepsProvider
         audioSettings={audioSettings}

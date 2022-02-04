@@ -5,16 +5,17 @@ import {Table} from '@arwes/core'
 const headers = [
   { id: 'typeID', data: 'typeID' },
   { id: 'typeName', data: 'Name' },
-  { id: 'soloContracts', data: '# Solo' },
-  { id: 'packageContracts', data: '# Package' },
-  { id: 'minSoloPrice_human', data: 'Min. Solo' },
-  { id: 'minPackagePrice_human', data: 'Min. Package' },
-  { id: 'minPrice_human', data: 'Market Value' },
-  { id: 'itemsFound', data: 'Items Found' },
-  { id: 'totalMarketValue_human', data: 'Total Market Value' },
+  { id: 'minSoloPrice_human', data: 'Solo' },
+  { id: 'minPackagePrice_human', data: 'Package' },
+  { id: 'minMarketPrice_human', data: 'Market' },
+  { id: 'marketLiquidity_human', data: 'Liquidity' },
+  { id: 'minPrice_human', data: 'Lowest Price' },
+  { id: 'itemsFound', data: 'Your Quantity' },
+  { id: 'totalMarketValue_human', data: 'Your Value' },
+  { id: 'marketType', data: 'Method' },
   { id: 'minPriceRegionName', data: 'Region' }
 ];
-const columnWidths = ['6%', '46%', '6%', '6%', '6%', '6%', '6%', '6%', '6%', '6%'];
+const columnWidths = ['6%', '40%', '6%', '6%', '6%', '6%', '6%', '6%', '6%', '6%', '6%'];
 
 const EstimateItems = (props) => {
   const [activate, setActivate] = React.useState(true);
@@ -38,12 +39,18 @@ const EstimateItems = (props) => {
 
   if (props.estimate.items.length) {
     return (
-      <Table
-        animator={{ activate }}
-        headers={headers}
-        dataset={dataset}
-        columnWidths={columnWidths}
-      />
+      <div>
+        <center>
+          <h3>Your Total Value:</h3>
+          <h1 class="hilite">{ props.estimate.totalMarketValue_human } ISK</h1>
+        </center>
+        <Table
+          animator={{ activate }}
+          headers={headers}
+          dataset={dataset}
+          columnWidths={columnWidths}
+        />
+      </div>
     );
   }
   else {

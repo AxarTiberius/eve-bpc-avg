@@ -6,6 +6,7 @@ var sqlite3 = require('sqlite3').verbose()
 var api_base = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
 var csvStringify = require('csv-stringify/sync').stringify
+var assert = require('assert')
 /*
 if (!fs.existsSync('./data/eve.sqlite')) {
   console.error('Please run ./get-db.sh first')
@@ -15,11 +16,12 @@ if (!fs.existsSync('./data/eve.sqlite')) {
 
 var
   taskLimit =         64,
-  sortIndex =         14,
+  sortIndex =         20,
   pageLimit =         1000,
   apiTimeout =        5000,
   itemLookupLimit =   64,
-  itemLookupTimeout = 64
+  itemLookupTimeout = 64,
+  orderProgressMax =  250
 
 // optional authentication
 var accessToken = null
@@ -40,7 +42,14 @@ const csvHeaders = [
   'modePackagePrice',
   'minPackagePrice',
   'maxPackagePrice',
+  'meanMarketPrice',
+  'medianMarketPrice',
+  'modeMarketPrice',
+  'marketLiquidity',
+  'minMarketPrice',
+  'maxMarketPrice',
   'minPrice',
+  'marketType',
   'minPriceRegionID',
   'minPriceRegionName'
 ]
@@ -107,126 +116,226 @@ var rows = [
   csvHeaders
 ], results = {items: {}}
 
-async.reduce(hub_ids, null, function (_ignore, regionID, done) {
-  // type: 1 is item_exchange
-  const speedData = [];
-  var page = 1;
+async.series([
+  doRegionContracts,
+  doRegionOrders
+], finalize)
 
-  async.doWhilst(function (pageCb) {
+function doRegionContracts (contractsDone) {
+  async.reduce(hub_ids, null, function (_ignore, regionID, done) {
+    // type: 1 is item_exchange
+    const speedData = [];
+    var page = 1;
+
+    async.doWhilst(function (pageCb) {
+      // create new progress bar
+      const b1 = new cliProgress.SingleBar({
+        format: 'Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
+        barCompleteChar: '\u2588',
+        barIncompleteChar: '\u2591',
+        hideCursor: true
+      });
+
+      apiRequest('GET', 'contracts/public/' + regionID + '/', {page}, function (err, body) {
+        if (err) {
+          return pageCb(err)
+        }
+        var fetchLength = body.length || 0;
+        if (!fetchLength) return pageCb(null, 0)
+        b1.start(body.length, 0, {
+          speed: 'calculating...'
+        });
+
+        function getTps (lookback) {
+          lookback || (lookback = 5000);
+          var currentOp = null
+          var now = new Date().getTime()
+          var lookbackOps = 0
+          var idxBound = null
+          var reverseSpeedData = speedData.reverse()
+          for (var idx = 0; idx < reverseSpeedData.length; idx++) {
+            currentOp = reverseSpeedData[idx]
+            if (currentOp < now - lookback) {
+              idxBound = idx;
+              break;
+            }
+            lookbackOps++
+          }
+          if (typeof idxBound === 'number' && speedData.length > idxBound) {
+            //speedData.splice(0, idxBound)
+          }
+          var avgOps = lookbackOps / (lookback / 1000)
+          return avgOps
+        }
+
+        var subtasks = body.map(function (contract) {
+          return function (contractDone) {
+            apiRequest('GET', 'contracts/public/items/' + contract.contract_id + '/', function (err, body, resp) {
+              if (err) {
+                return contractDone(err)
+              }
+              // console.log('contract', contract)
+              speedData.push(new Date().getTime())
+              if (resp.statusCode === 204) {
+                // console.log('expired!')
+                b1.increment(1, {
+                  speed: getTps() + ' ops/sec'
+                })
+                return contractDone()
+              }
+              if (contract.type !== 'item_exchange') {
+                // only process item exchanges
+                b1.increment(1, {
+                  speed: getTps() + ' ops/sec'
+                })
+                return contractDone()
+              }
+              var items = (body && body.forEach) ? body : [];
+              var all_included = items.every(function (item) {
+                return item.is_included
+              })
+              if (all_included) {
+                items.forEach(function (item) {
+                  var itemKey = '' + item.type_id
+                  if (item.is_included) {
+                    results.items[itemKey] || (
+                      results.items[itemKey] = {
+                        soloPrices: [],
+                        packagePrices: [],
+                        soloRegions: [],
+                        packageRegions: [],
+                        marketPrices: [],
+                        marketRegions: [],
+                        marketLiquidity: 0
+                      }
+                    )
+                    if (body.length === 1) {
+                      results.items[itemKey].soloPrices.push(contract.price / item.quantity)
+                      results.items[itemKey].soloRegions.push(regionID)
+                    }
+                    else {
+                      results.items[itemKey].packagePrices.push(contract.price / item.quantity)
+                      results.items[itemKey].packageRegions.push(regionID)
+                    }
+                  }
+                  else {
+                    all_included = false
+                  }
+                })
+                if (contract.reward) {
+                  console.error('reward for all included?', regionID, contract, items)
+                }
+                if (!contract.price) {
+                  console.error('free??', regionID, contract, items)
+                }
+              }
+              b1.increment(1, {
+                speed: getTps() + ' ops/sec'
+              })
+              contractDone()
+            })
+          }
+        })
+
+        async.parallelLimit(subtasks, taskLimit, function (err) {
+          if (err) return done(err)
+          b1.stop()
+          pageCb(null, fetchLength)
+        })
+      })
+    }, function (lastFetchLength, testCb) {
+      page++
+      testCb(null, lastFetchLength === pageLimit)
+    }, function (err, results) {
+      if (err) return done(err)
+      done()
+    })
+  }, contractsDone)
+}
+
+function doRegionOrders (ordersDone) {
+  async.reduce(hub_ids, null, function (_ignore, regionID, done) {
+    const speedData = [];
+    var page = 1;
+
     // create new progress bar
     const b1 = new cliProgress.SingleBar({
-      format: 'Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
+      format: 'Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} x1000 Orders || Speed: {speed}',
       barCompleteChar: '\u2588',
       barIncompleteChar: '\u2591',
       hideCursor: true
     });
 
-    apiRequest('GET', 'contracts/public/' + regionID + '/', {page, type: 1}, function (err, body) {
-      if (err) {
-        return pageCb(err)
-      }
-      var fetchLength = body.length || 0;
-      if (!fetchLength) return pageCb(null, 0)
-      b1.start(body.length, 0, {
-        speed: 'calculating...'
-      });
+    b1.start(orderProgressMax, 0, {
+      speed: 'calculating...'
+    });
 
-      function getTps (lookback) {
-        lookback || (lookback = 5000);
-        var currentOp = null
-        var now = new Date().getTime()
-        var lookbackOps = 0
-        var idxBound = null
-        var reverseSpeedData = speedData.reverse()
-        for (var idx = 0; idx < reverseSpeedData.length; idx++) {
-          currentOp = reverseSpeedData[idx]
-          if (currentOp < now - lookback) {
-            idxBound = idx;
-            break;
+    async.doWhilst(function (pageCb) {
+      apiRequest('GET', 'markets/' + regionID + '/orders/', {page, order_type: 'sell'}, function (err, body) {
+        if (err) {
+          return pageCb(err)
+        }
+        var fetchLength = body.length || 0;
+        if (!fetchLength) return pageCb(null, 0)
+
+        function getTps (lookback) {
+          lookback || (lookback = 5000);
+          var currentOp = null
+          var now = new Date().getTime()
+          var lookbackOps = 0
+          var idxBound = null
+          var reverseSpeedData = speedData.reverse()
+          for (var idx = 0; idx < reverseSpeedData.length; idx++) {
+            currentOp = reverseSpeedData[idx]
+            if (currentOp < now - lookback) {
+              idxBound = idx;
+              break;
+            }
+            lookbackOps++
           }
-          lookbackOps++
+          if (typeof idxBound === 'number' && speedData.length > idxBound) {
+            //speedData.splice(0, idxBound)
+          }
+          var avgOps = lookbackOps / (lookback / 1000)
+          return avgOps
         }
-        if (typeof idxBound === 'number' && speedData.length > idxBound) {
-          //speedData.splice(0, idxBound)
-        }
-        var avgOps = lookbackOps / (lookback / 1000)
-        return avgOps
-      }
 
-      var subtasks = body.map(function (contract) {
-        return function (contractDone) {
-          apiRequest('GET', 'contracts/public/items/' + contract.contract_id + '/', function (err, body, resp) {
-            if (err) {
-              return contractDone(err)
+        body.forEach(function (order) {
+          speedData.push(new Date().getTime())
+          var itemKey = '' + order.type_id
+          results.items[itemKey] || (
+            results.items[itemKey] = {
+              soloPrices: [],
+              packagePrices: [],
+              soloRegions: [],
+              packageRegions: [],
+              marketPrices: [],
+              marketRegions: [],
+              marketLiquidity: 0
             }
-            // console.log('contract', contract)
-            speedData.push(new Date().getTime())
-            if (resp.statusCode === 204) {
-              // console.log('expired!')
-              b1.increment(1, {
-                speed: getTps() + ' ops/sec'
-              })
-              return contractDone()
-            }
-            if (contract.type !== 'item_exchange') {
-              // only process item exchanges
-              b1.increment(1, {
-                speed: getTps() + ' ops/sec'
-              })
-              return contractDone()
-            }
-            var items = (body && body.forEach) ? body : [];
-            var all_included = items.every(function (item) {
-              return item.is_included
-            })
-            if (all_included) {
-              items.forEach(function (item) {
-                var itemKey = '' + item.type_id
-                if (item.is_included) {
-                  results.items[itemKey] || (results.items[itemKey] = {soloPrices: [], packagePrices: [], soloRegions: [], packageRegions: []})
-                  if (body.length === 1) {
-                    results.items[itemKey].soloPrices.push(contract.price / item.quantity)
-                    results.items[itemKey].soloRegions.push(regionID)
-                  }
-                  else {
-                    results.items[itemKey].packagePrices.push(contract.price / item.quantity)
-                    results.items[itemKey].packageRegions.push(regionID)
-                  }
-                }
-                else {
-                  all_included = false
-                }
-              })
-              if (contract.reward) {
-                console.error('reward for all included?', regionID, contract, items)
-              }
-              if (!contract.price) {
-                console.error('free??', regionID, contract, items)
-              }
-            }
-            b1.increment(1, {
-              speed: getTps() + ' ops/sec'
-            })
-            contractDone()
-          })
-        }
-      })
-
-      async.parallelLimit(subtasks, taskLimit, function (err) {
-        if (err) return done(err)
-        b1.stop()
+          )
+          results.items[itemKey].marketPrices.push(order.price)
+          results.items[itemKey].marketRegions.push(regionID)
+          results.items[itemKey].marketLiquidity += order.volume_remain
+        })
+        b1.increment(1, {
+          speed: getTps() + ' ops/sec'
+        })
         pageCb(null, fetchLength)
       })
+    }, function (lastFetchLength, testCb) {
+      page++
+      testCb(null, lastFetchLength === pageLimit)
+    }, function (err, results) {
+      b1.stop()
+      if (err) return done(err)
+      done()
     })
-  }, function (lastFetchLength, testCb) {
-    page++
-    testCb(null, lastFetchLength === pageLimit)
-  }, function (err, results) {
-    if (err) return done(err)
-    done()
-  })
-}, function (err) {
-  if (err) return done(err)
+  }, ordersDone)
+}
+
+function finalize (err) {
+  if (err) throw err
   var numItems = Object.keys(results.items).length
   console.error('Found', numItems, 'unique items.')
   const b1 = new cliProgress.SingleBar({
@@ -338,9 +447,35 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
         var minPackagePrice = item.packagePrices.length ? Math.min.apply(Math, item.packagePrices) : ''
         var maxPackagePrice = item.packagePrices.length ? Math.max.apply(Math, item.packagePrices) : ''
 
+        var totalMarketPrice = item.marketPrices.reduce(function (prev, cur) {
+          return prev + cur
+        }, 0)
+        var meanMarketPrice = item.marketPrices.length ? totalMarketPrice / item.marketPrices.length : ''
+        var medianMarketPrice = item.marketPrices.length ? item.marketPrices[0] : ''
+        var uniqueMarket = item.marketPrices.filter(onlyUnique);
+        if (uniqueMarket.length > 1) {
+          var midPoint = Math.floor(uniqueMarket.length / 2)
+          medianMarketPrice = uniqueMarket[midPoint]
+        }
+        var marketOccur = {}
+        item.marketPrices.forEach(function (price) {
+          var k = price + ''
+          if (!marketOccur[k]) marketOccur[k] = 0;
+          marketOccur[k]++
+        })
+        var maxMarketOccur = 0, modeMarketPrice = null;
+        Object.keys(marketOccur).forEach(function (k) {
+          if (marketOccur[k] > maxMarketOccur) {
+            maxMarketOccur = marketOccur[k]
+            modeMarketPrice = Number(k)
+          }
+        })
+        var minMarketPrice = item.marketPrices.length ? Math.min.apply(Math, item.marketPrices) : ''
+        var maxMarketPrice = item.marketPrices.length ? Math.max.apply(Math, item.marketPrices) : ''
+
         var minPrice = null, minPriceRegionID, minPriceRegionName
         //console.log('item', item)
-        var fromSolo = false
+        var fromSolo = false, fromMarket = false
         if (minSoloPrice !== '' || minPackagePrice !== '') {
           if (minSoloPrice !== '' && minPackagePrice !== '') {
             if (minSoloPrice <= minPackagePrice) {
@@ -359,14 +494,27 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
             minPrice = minPackagePrice
           }
         }
-        var minPriceIdx
-        if (fromSolo) {
+        if (minMarketPrice !== '') {
+          if (minPrice === null || minMarketPrice <= minPrice) {
+            minPrice = minMarketPrice
+            fromMarket = true
+          }
+        }
+        var minPriceIdx, marketType
+        if (fromMarket) {
+          minPriceIdx = item.marketPrices.indexOf(minPrice)
+          minPriceRegionID = item.marketRegions[minPriceIdx]
+          marketType = 'market'
+        }
+        else if (fromSolo) {
           minPriceIdx = item.soloPrices.indexOf(minPrice)
           minPriceRegionID = item.soloRegions[minPriceIdx]
+          marketType = 'solo'
         }
         else {
           minPriceIdx = item.packagePrices.indexOf(minPrice)
           minPriceRegionID = item.packageRegions[minPriceIdx]
+          marketType = 'package'
         }
         minPriceRegionName = hubs[minPriceRegionID]
         /*
@@ -394,7 +542,14 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
           csvNumber(modePackagePrice),
           csvNumber(minPackagePrice),
           csvNumber(maxPackagePrice),
+          csvNumber(meanMarketPrice),
+          csvNumber(medianMarketPrice),
+          csvNumber(modeMarketPrice),
+          csvNumber(item.marketLiquidity),
+          csvNumber(minMarketPrice),
+          csvNumber(maxMarketPrice),
           csvNumber(minPrice),
+          marketType,
           minPriceRegionID,
           minPriceRegionName
         ])
@@ -434,4 +589,4 @@ async.reduce(hub_ids, null, function (_ignore, regionID, done) {
     })
     file.end()
   })
-})
+}
