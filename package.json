@@ -5,9 +5,9 @@
   "bin": "./eve-bpc-avg.sh",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "",
+    "start": "node server.js",
     "develop": "",
-    "build": ""
+    "build": "npm run --prefix frontend build"
   },
   "author": "Axar Tiberius",
   "license": "MIT",
@@ -15,19 +15,12 @@
     "ansi-colors": "^4.1.1",
     "async": "^3.2.3",
     "cli-progress": "^3.10.0",
-    "cross-env": "^7.0.3",
     "csv": "^6.0.5",
     "csv-stringify": "^6.0.5",
-    "dish": "^1.0.7",
-    "dotenv": "^14.3.2",
-    "human-number": "^1.0.6",
+    "dotenv": "^16.0.0",
     "micro-request": "^666.0.10",
     "motley": "^2.2.8",
     "motley-buffet": "^2.0.2",
-    "motley-json": "^2.0.3",
-    "socket.io": "^4.4.1",
-    "socket.io-client": "^4.4.1",
-    "socket.io-stream": "^0.9.1",
     "sqlite3": "^5.0.2"
   }
 }

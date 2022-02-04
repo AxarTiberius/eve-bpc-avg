@@ -7,8 +7,7 @@ try {
     _ns: 'motley',
     _maps: [
       require('./_codemap'),
-      require('motley-buffet'),
-      require('motley-json')
+      require('motley-buffet')
     ]
   })
 }

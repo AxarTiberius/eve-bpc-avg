@@ -68,7 +68,7 @@ const App = () => {
         'body': globalStyles.body,
         '.arwes-text-field': { marginBottom: 20 },
         'form': {width: '750px', margin: '50px auto'},
-        'textarea': {'maxHeight': '500px', 'height': '500px'},
+        'textarea': {'maxHeight': '200px', 'height': '200px'},
         '.hilite': {'color': '#F8F800'},
       }} />
       <BleepsProvider
@@ -93,10 +93,10 @@ const App = () => {
                 onChange={onPasteChange}
                 style={{
                   'width': '700px',
-                  'minHeight': '500px'
+                  'minHeight': '200px'
                 }}
               />
-              <Submit>Appraise Contracts</Submit>
+              <Submit>Appraise</Submit>
             </FrameHexagon>
           </form>
           <EstimateTable estimate={estimate} />

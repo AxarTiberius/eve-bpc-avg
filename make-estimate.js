@@ -1,8 +1,16 @@
 const csv = require('csv')
-var hn = require('human-number')
 var assert = require('assert')
+
+const ALPHABET = 'KMBTPEZY'.split('')
+const TRESHOLD = 1e3
+
 const humanNumber = function (num) {
-  return String(hn(num, function (n) { return Math.round(Number.parseFloat(n)) })).toLowerCase()
+  var n = Math.abs(num)
+  var index = 0
+  while (n >= TRESHOLD && ++index < ALPHABET.length) { n /= TRESHOLD }
+  n = Math.round(Number.parseFloat(n))
+  var str = index === 0 ? n : n + ALPHABET[index - 1]
+  return String(str).toLowerCase()
 }
 
 var pasteParser = require('./parser');
