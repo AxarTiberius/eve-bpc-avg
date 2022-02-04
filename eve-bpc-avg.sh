@@ -82,6 +82,7 @@ function apiRequest (method, path, postData, onRes) {
   const query = JSON.parse(JSON.stringify(postData))
   ;(function retry () {
     mr[method.toLowerCase()](reqUrl, {headers, query, timeout: apiTimeout}, function (err, resp, body) {
+      console.log(body)
       if (err) {
         if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
           //console.error('warning: connection error for ' + path + ', retrying')

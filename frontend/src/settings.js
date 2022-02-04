@@ -1,5 +1,4 @@
 const FONT_FAMILY_ROOT = '"Titillium Web", sans-serif';
-const IMAGE_URL = '/assets/images/wallpaper.jpg';
 const SOUND_OBJECT_URL = '/assets/sounds/object.mp3';
 const SOUND_ASSEMBLE_URL = '/assets/sounds/assemble.mp3';
 const SOUND_TYPE_URL = '/assets/sounds/type.mp3';
@@ -10,11 +9,14 @@ const SOUND_INFO_URL = '/assets/sounds/information.mp3';
 const SOUND_READOUT_URL = '/assets/sounds/readout.mp3';
 const SOUND_TOGGLE_URL = '/assets/sounds/toggle.mp3';
 const SOUND_WARNING_URL = '/assets/sounds/warning.mp3';
+const BG_URL = '/assets/images/bg.jpg'
 
 const globalStyles = {
   body: {
     fontFamily: FONT_FAMILY_ROOT,
-    height: '100%'
+    height: '100%',
+    background: 'url(' + BG_URL + ') top center no-repeat',
+    backgroundSize: '100%'
   },
   html: {
     height: '100%',
@@ -51,7 +53,6 @@ const bleepsSettings = {
 export {
   animatorGeneral,
   globalStyles,
-  IMAGE_URL,
   audioSettings,
   playersSettings,
   bleepsSettings,

@@ -67,7 +67,7 @@ const App = () => {
         'html': globalStyles.html,
         'body': globalStyles.body,
         '.arwes-text-field': { marginBottom: 20 },
-        'form': {width: '750px', margin: '50px auto'},
+        'form': {width: '750px', margin: '0 auto 50px auto', paddingTop: '50px'},
         'textarea': {'maxHeight': '200px', 'height': '200px'},
         '.hilite': {'color': '#F8F800'},
       }} />
