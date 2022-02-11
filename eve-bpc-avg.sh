@@ -79,7 +79,7 @@ function apiRequest (method, path, postData, onRes) {
   var type
   if (contractsPublicMatch) {
     type = 'list_contracts'
-    mockResponseTime = Math.random() * (1448 - 909) + 909
+    mockResponseTime = 1200
     mockResponse = sampleContractsPage
     if (contractsPublicMatch[1] === '10000002') {
       if (postData.page === 25) {
@@ -93,13 +93,13 @@ function apiRequest (method, path, postData, onRes) {
   var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
   if (contractsPublicItemsMatch) {
     type = 'contract_items'
-    mockResponseTime = Math.random() * (600 - 300) + 300
+    mockResponseTime = 400
     mockResponse = sampleContractItems
   }
   var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
   if (marketOrdersMatch) {
     type = 'list_orders'
-    mockResponseTime = Math.random() * (6524 - 575) + 575
+    mockResponseTime = 1000
     mockResponse = sampleOrdersPage
     if (marketOrdersMatch[1] === '10000002') {
       if (postData.page === 220) {
@@ -110,6 +110,7 @@ function apiRequest (method, path, postData, onRes) {
       mockResponse = [].slice.call(mockResponse, 1)
     }
   }
+  mockResponseTime += 200
   setTimeout(function () {
     var totalTime = new Date().getTime() - req_start
     // console.log('completed', path, 'in', totalTime, 'ms')

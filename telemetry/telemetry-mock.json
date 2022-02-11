@@ -1,0 +1,178 @@
+[
+  {
+    "time": 1644548655783,
+    "count": 4005,
+    "sum": 4005,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 4005
+  },
+  {
+    "time": 1644548700000,
+    "count": 5517,
+    "sum": 5517,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 4761
+  },
+  {
+    "time": 1644548760000,
+    "count": 5493,
+    "sum": 5493,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 5505
+  },
+  {
+    "time": 1644548820000,
+    "count": 5390,
+    "sum": 5390,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 5441.5
+  },
+  {
+    "time": 1644548880000,
+    "count": 5516,
+    "sum": 5516,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 5453
+  },
+  {
+    "time": 1644548940000,
+    "count": 5365,
+    "sum": 5365,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 5440.5
+  },
+  {
+    "time": 1644549000000,
+    "count": 5516,
+    "sum": 5516,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 5440.5
+  },
+  {
+    "time": 1644549060000,
+    "count": 5301,
+    "sum": 5301,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 5408.5
+  },
+  {
+    "time": 1644549120000,
+    "count": 2961,
+    "sum": 2961,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 4131
+  },
+  {
+    "time": 1644549180000,
+    "count": 50,
+    "sum": 50,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 1505.5
+  },
+  {
+    "time": 1644549240000,
+    "count": 50,
+    "sum": 50,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 50
+  },
+  {
+    "time": 1644549300000,
+    "count": 50,
+    "sum": 50,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 50
+  },
+  {
+    "time": 1644549360000,
+    "count": 50,
+    "sum": 50,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 50
+  },
+  {
+    "time": 1644549420000,
+    "count": 50,
+    "sum": 50,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 50
+  },
+  {
+    "time": 1644549480000,
+    "count": 50,
+    "sum": 50,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 50
+  },
+  {
+    "time": 1644549540000,
+    "count": 38,
+    "sum": 38,
+    "avg": 1,
+    "max": 1,
+    "min": 1,
+    "open": 1,
+    "close": 1,
+    "lookbackAvg": 44
+  }
+]
