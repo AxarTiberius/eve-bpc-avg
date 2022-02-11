@@ -16,6 +16,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 57127,High-grade Rapture Epsilon,0,,,,,,0,,,,,,1296000000,1296000000,1296000000,340,1296000000,1296000000,1296000000,market,10000002,The Forge
 60565,Flycatcher Malagrin Marshlight SKIN,0,,,,,,0,,,,,,1282000000,1282000000,1282000000,340,1282000000,1282000000,1282000000,market,10000002,The Forge
 59333,Sin Iceblade Guerilla SKIN,0,,,,,,0,,,,,,1263000000,1263000000,1263000000,340,1263000000,1263000000,1263000000,market,10000002,The Forge
+62222,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,1150000000,1150000000,1150000000,340,1150000000,1150000000,1150000000,market,10000002,The Forge
 59332,Redeemer Iceblade Guerilla SKIN,0,,,,,,0,,,,,,1091000000,1030000000,1030000000,680,1030000000,1152000000,1030000000,market,10000002,The Forge
 57734,Harpy GalNet StreamCast Unit SKIN,0,,,,,,0,,,,,,1000000000,1000000000,1000000000,340,1000000000,1000000000,1000000000,market,10000002,The Forge
 52920,High-grade Mimesis Epsilon,0,,,,,,0,,,,,,998900000,998900000,998900000,1360,998900000,998900000,998900000,market,10000002,The Forge
@@ -57,11 +58,14 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 17718,Phantasm,0,,,,,,0,,,,,,420000000,420000000,420000000,680,420000000,420000000,420000000,market,10000002,The Forge
 46425,Megathron Kopis Edge SKIN,0,,,,,,0,,,,,,420000000,420000000,420000000,680,420000000,420000000,420000000,market,10000002,The Forge
 50053,Inquest 'Hedone' Entanglement Optimizer WS-802,0,,,,,,0,,,,,,408700000,408700000,408700000,340,408700000,408700000,408700000,market,10000002,The Forge
+62221,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,400000000,400000000,400000000,340,400000000,400000000,400000000,market,10000002,The Forge
+62224,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,399500000,399000000,399000000,680,399000000,400000000,399000000,market,10000002,The Forge
 34672,Avatar Kador SKIN,0,,,,,,0,,,,,,388900000,388900000,388900000,340,388900000,388900000,388900000,market,10000002,The Forge
 54403,Mid-grade Hydra Omega,0,,,,,,0,,,,,,388600000,388600000,388600000,340,388600000,388600000,388600000,market,10000002,The Forge
 22466,Astarte,0,,,,,,0,,,,,,384800000,384800000,384800000,680,384800000,384800000,384800000,market,10000002,The Forge
 17498,Caldari Navy Multispectrum Shield Hardener,0,,,,,,0,,,,,,376000000,376000000,376000000,340,376000000,376000000,376000000,market,10000002,The Forge
 53630,Oracle Oasis of Faith SKIN,0,,,,,,0,,,,,,352000000,352000000,352000000,340,352000000,352000000,352000000,market,10000002,The Forge
+62227,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,350000000,350000000,350000000,340,350000000,350000000,350000000,market,10000002,The Forge
 52921,High-grade Mimesis Gamma,0,,,,,,0,,,,,,349000000,349000000,349000000,2040,349000000,349000000,349000000,market,10000002,The Forge
 40668,Capital Energy Nosferatu II,0,,,,,,0,,,,,,348800000,348800000,348800000,340,348800000,348800000,348800000,market,10000002,The Forge
 33526,High-grade Ascendancy Delta,0,,,,,,0,,,,,,348700000,348700000,348700000,680,348700000,348700000,348700000,market,10000002,The Forge
@@ -117,8 +121,8 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 53856,Low-grade Nirvana Delta,0,,,,,,0,,,,,,143800000,143800000,143800000,340,143800000,143800000,143800000,market,10000002,The Forge
 12743,Viator,0,,,,,,0,,,,,,141700000,141700000,141700000,1020,141700000,141700000,141700000,market,10000002,The Forge
 33846,Dread Guristas Drone Damage Amplifier,0,,,,,,0,,,,,,140200000,140200000,140200000,340,140200000,140200000,140200000,market,10000002,The Forge
-10213,Neural Boost - Improved,0,,,,,,0,,,,,,139900000,139900000,139900000,340,139900000,139900000,139900000,market,10000002,The Forge
 10217,Ocular Filter - Improved,0,,,,,,0,,,,,,139900000,139900000,139900000,340,139900000,139900000,139900000,market,10000002,The Forge
+10213,Neural Boost - Improved,0,,,,,,0,,,,,,139900000,139900000,139900000,340,139900000,139900000,139900000,market,10000002,The Forge
 4294,Triage Module II,0,,,,,,0,,,,,,139300000,139300000,139300000,680,139300000,139300000,139300000,market,10000002,The Forge
 45921,Erebus Exoplanets Hunter SKIN,0,,,,,,0,,,,,,138800000,138800000,138800000,340,138800000,138800000,138800000,market,10000002,The Forge
 56145,Men's EDENCOM 'Reliant' Beret,0,,,,,,0,,,,,,138800000,138800000,138800000,340,138800000,138800000,138800000,market,10000002,The Forge
@@ -262,6 +266,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 22783,Interdiction Sphere Launcher I Blueprint,0,,,,,,0,,,,,,17328680,17328680,17328680,4760,17328680,17328680,17328680,market,10000002,The Forge
 54555,Kitsune Guristas SKIN,0,,,,,,0,,,,,,16890000,16890000,16890000,340,16890000,16890000,16890000,market,10000002,The Forge
 17703,Imperial Navy Slicer,0,,,,,,0,,,,,,16130000,16130000,16130000,340,16130000,16130000,16130000,market,10000002,The Forge
+62000,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,15930000,15930000,15930000,1020,15930000,15930000,15930000,market,10000002,The Forge
 28268,'Augmented' Berserker,0,,,,,,0,,,,,,15790000,15790000,15790000,15980,15790000,15790000,15790000,market,10000002,The Forge
 18909,Corpus B-Type Kinetic Armor Hardener,0,,,,,,0,,,,,,15400000,15400000,15400000,340,15400000,15400000,15400000,market,10000002,The Forge
 45999,Agency 'Pyrolancea' DB5 Dose II,0,,,,,,0,,,,,,15040000,15040000,15040000,340,15040000,15040000,15040000,market,10000002,The Forge
@@ -269,6 +274,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 57025,Maelstrom Aurora Universalis SKIN,0,,,,,,0,,,,,,15000000,15000000,15000000,680,15000000,15000000,15000000,market,10000002,The Forge
 49773,Heavy Mutadaptive Remote Armor Repairer II,0,,,,,,0,,,,,,14960000,14960000,14960000,3400,14960000,14960000,14960000,market,10000002,The Forge
 44183,Celestis Glacial Drift SKIN,0,,,,,,0,,,,,,14930000,14930000,14930000,340,14930000,14930000,14930000,market,10000002,The Forge
+62044,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,14900000,14900000,14900000,3740,14900000,14900000,14900000,market,10000002,The Forge
 46821,Bhaalgorn Glacial Drift SKIN,0,,,,,,0,,,,,,14400000,14400000,14400000,340,14400000,14400000,14400000,market,10000002,The Forge
 19251,Gistum A-Type Thermal Shield Amplifier,0,,,,,,0,,,,,,14080000,14080000,14080000,340,14080000,14080000,14080000,market,10000002,The Forge
 42798,Impel Cold Iron SKIN,0,,,,,,0,,,,,,13750000,13750000,13750000,340,13750000,13750000,13750000,market,10000002,The Forge
@@ -296,11 +302,11 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 57479,Core Temperature Regulator,0,,,,,,0,,,,,,10830000,10830000,10830000,1700,10830000,10830000,10830000,market,10000002,The Forge
 46956,Brutix Navy Issue Glacial Drift SKIN,0,,,,,,0,,,,,,10380000,10380000,10380000,340,10380000,10380000,10380000,market,10000002,The Forge
 31469,Medium Energy Discharge Elutriation I Blueprint,0,,,,,,0,,,,,,10010000,10010000,10010000,6460,10010000,10010000,10010000,market,10000002,The Forge
-15617,Ammatar Navy Midshipman Insignia I,0,,,,,,0,,,,,,10000000,10000000,10000000,3060,10000000,10000000,10000000,market,10000002,The Forge
 15618,Ammatar Navy Midshipman Insignia II,0,,,,,,0,,,,,,10000000,10000000,10000000,4420,10000000,10000000,10000000,market,10000002,The Forge
+15617,Ammatar Navy Midshipman Insignia I,0,,,,,,0,,,,,,10000000,10000000,10000000,3060,10000000,10000000,10000000,market,10000002,The Forge
 46188,Unrefined Platinum Technite Reaction Formula,0,,,,,,0,,,,,,10000000,10000000,10000000,3400,10000000,10000000,10000000,market,10000002,The Forge
-46189,Unrefined Solerium Reaction Formula,0,,,,,,0,,,,,,10000000,10000000,10000000,6800,10000000,10000000,10000000,market,10000002,The Forge
 46872,Rhea Glacial Drift SKIN,0,,,,,,0,,,,,,10000000,10000000,10000000,340,10000000,10000000,10000000,market,10000002,The Forge
+46189,Unrefined Solerium Reaction Formula,0,,,,,,0,,,,,,10000000,10000000,10000000,6800,10000000,10000000,10000000,market,10000002,The Forge
 35789,Astro-Inertial Compact Missile Guidance Computer,0,,,,,,0,,,,,,9999000,9999000,9999000,340,9999000,9999000,9999000,market,10000002,The Forge
 15619,Ammatar Navy Midshipman Insignia III,0,,,,,,0,,,,,,9998000,9998000,9998000,3400,9998000,9998000,9998000,market,10000002,The Forge
 4138,Women's 'Executor' Coat (green/gold),0,,,,,,0,,,,,,9987000,9987000,9987000,340,9987000,9987000,9987000,market,10000002,The Forge
@@ -311,6 +317,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 3181,Zainou 'Snapshot' Cruise Missiles CM-602,0,,,,,,0,,,,,,9875000,9875000,9875000,1700,9875000,9875000,9875000,market,10000002,The Forge
 34124,Experimental Jump Drive Economizer,0,,,,,,0,,,,,,13343333,9780000,9780000,4760,9780000,18160000,9780000,market,10000002,The Forge
 33832,Imperial Navy Omnidirectional Tracking Enhancer,0,,,,,,0,,,,,,9699000,9699000,9699000,1360,9699000,9699000,9699000,market,10000002,The Forge
+61994,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,9478000,9478000,9478000,340,9478000,9478000,9478000,market,10000002,The Forge
 56143,Cataclysmic Gamma Filament,0,,,,,,0,,,,,,11545000,13620000,9470000,4420,9470000,13620000,9470000,market,10000002,The Forge
 34363,Women's 'Outlaw' Boots (Blood Raiders),0,,,,,,0,,,,,,9298000,9298000,9298000,340,9298000,9298000,9298000,market,10000002,The Forge
 56067,Glorification-15 'Devana' Filament,0,,,,,,0,,,,,,9214000,9214000,9214000,340,9214000,9214000,9214000,market,10000002,The Forge
@@ -350,8 +357,8 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 17351,Quantum Microprocessor Blueprint,0,,,,,,0,,,,,,5000000,5000000,5000000,1857921500,5000000,5000000,5000000,market,10000002,The Forge
 13257,Inherent Implants 'Noble' Mechanic MC-803,0,,,,,,0,,,,,,4994000,4994000,4994000,340,4994000,4994000,4994000,market,10000002,The Forge
 33223,Alliance Tournament I: Band of Brothers,0,,,,,,0,,,,,,4990000,4990000,4990000,6800,4990000,4990000,4990000,market,10000002,The Forge
-33231,Alliance Tournament VII: Pandemic Legion,0,,,,,,0,,,,,,4990000,4990000,4990000,6460,4990000,4990000,4990000,market,10000002,The Forge
 33227,Alliance Tournament IV: HUN Reloaded,0,,,,,,0,,,,,,4990000,4990000,4990000,6800,4990000,4990000,4990000,market,10000002,The Forge
+33231,Alliance Tournament VII: Pandemic Legion,0,,,,,,0,,,,,,4990000,4990000,4990000,6460,4990000,4990000,4990000,market,10000002,The Forge
 33373,Alliance Tournament IX: HYDRA RELOADED and 0utbreak,0,,,,,,0,,,,,,4990000,4990000,4990000,340,4990000,4990000,4990000,market,10000002,The Forge
 33387,Alliance Tournament IV: Pandemic Legion,0,,,,,,0,,,,,,4990000,4990000,4990000,6800,4990000,4990000,4990000,market,10000002,The Forge
 12199,Mobile Medium Warp Disruptor I,0,,,,,,0,,,,,,4984000,4984000,4984000,7140,4984000,4984000,4984000,market,10000002,The Forge
@@ -367,6 +374,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 34208,Optimized Augmentation Decryptor,0,,,,,,0,,,,,,4450000,4450000,4450000,680,4450000,4450000,4450000,market,10000002,The Forge
 25910,Large Drone Repair Augmentor I,0,,,,,,0,,,,,,4400000,4400000,4400000,6800,4400000,4400000,4400000,market,10000002,The Forge
 45767,Imperial Navy Slicer Exoplanets Hunter SKIN,0,,,,,,0,,,,,,4300000,4300000,4300000,1020,4300000,4300000,4300000,market,10000002,The Forge
+61982,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,4300000,4300000,4300000,6460,4300000,4300000,4300000,market,10000002,The Forge
 12202,Medium Artillery Specialization,0,,,,,,0,,,,,,4298000,4298000,4298000,340,4298000,4298000,4298000,market,10000002,The Forge
 13992,Domination Thermal Armor Hardener,0,,,,,,0,,,,,,4264000,4264000,4264000,680,4264000,4264000,4264000,market,10000002,The Forge
 11577,Improved Cloaking Device II,0,,,,,,0,,,,,,4196000,4196000,4196000,5440,4196000,4196000,4196000,market,10000002,The Forge
@@ -389,11 +397,12 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 53360,Tempest Aurora Universalis SKIN,0,,,,,,0,,,,,,3500000,3500000,3500000,340,3500000,3500000,3500000,market,10000002,The Forge
 15460,Standard Frentix Booster,0,,,,,,0,,,,,,3499000,3499000,3499000,2380,3499000,3499000,3499000,market,10000002,The Forge
 11447,Laser Physics,0,,,,,,0,,,,,,3315000,3315000,3315000,340,3315000,3315000,3315000,market,10000002,The Forge
+61997,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,3300000,3300000,3300000,1020,3300000,3300000,3300000,market,10000002,The Forge
 3244,Warp Disruptor II,0,,,,,,0,,,,,,3299000,3299000,3299000,340,3299000,3299000,3299000,market,10000002,The Forge
 18847,Centum C-Type Thermal Energized Membrane,0,,,,,,0,,,,,,3138500,3050000,3050000,1700,3050000,3227000,3050000,market,10000002,The Forge
+45765,Malediction Exoplanets Hunter SKIN,0,,,,,,0,,,,,,3000000,3000000,3000000,3400,3000000,3000000,3000000,market,10000002,The Forge
 45776,Maller Exoplanets Hunter SKIN,0,,,,,,0,,,,,,3000000,3000000,3000000,50660,3000000,3000000,3000000,market,10000002,The Forge
 45794,Apocalypse Exoplanets Hunter SKIN,0,,,,,,0,,,,,,3000000,3000000,3000000,340,3000000,3000000,3000000,market,10000002,The Forge
-45765,Malediction Exoplanets Hunter SKIN,0,,,,,,0,,,,,,3000000,3000000,3000000,3400,3000000,3000000,3000000,market,10000002,The Forge
 691,Rifter Blueprint,0,,,,,,0,,,,,,2998000,2998000,2998000,340,2998000,2998000,2998000,market,10000002,The Forge
 34726,Magnate Sarum SKIN,0,,,,,,0,,,,,,2990000,2990000,2990000,10200,2990000,2990000,2990000,market,10000002,The Forge
 45950,Thrasher Exoplanets Hunter SKIN,0,,,,,,0,,,,,,2984000,2984000,2984000,340,2984000,2984000,2984000,market,10000002,The Forge
@@ -466,6 +475,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 3949,Medium Plasma Smartbomb II,0,,,,,,0,,,,,,1649000,1649000,1649000,16660,1649000,1649000,1649000,market,10000002,The Forge
 2024,Medium Capacitor Booster II,0,,,,,,0,,,,,,1633000,1633000,1633000,1360,1633000,1633000,1633000,market,10000002,The Forge
 13003,Small Energy Neutralizer II,0,,,,,,0,,,,,,1518000,1518000,1518000,2720,1518000,1518000,1518000,market,10000002,The Forge
+61861,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,1500000,1500000,1500000,340,1500000,1500000,1500000,market,10000002,The Forge
 13967,Dread Guristas Explosive Shield Hardener,0,,,,,,0,,,,,,1484000,1484000,1484000,340,1484000,1484000,1484000,market,10000002,The Forge
 8027,Prototype 'Arbalest' Rapid Light Missile Launcher,0,,,,,,0,,,,,,1499000,1548000,1450000,2380,1450000,1548000,1450000,market,10000002,The Forge
 26912,Small Remote Armor Repairer II,0,,,,,,0,,,,,,1445000,1445000,1445000,340,1445000,1445000,1445000,market,10000002,The Forge
@@ -476,8 +486,8 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 43762,Venture Caldari Industrial Livery SKIN,0,,,,,,0,,,,,,1255000,1255000,1255000,340,1255000,1255000,1255000,market,10000002,The Forge
 25919,Large Drone Mining Augmentor I Blueprint,0,,,,,,0,,,,,,1250000,1250000,1250000,18700,1250000,1250000,1250000,market,10000002,The Forge
 25921,Large Sentry Damage Augmentor I Blueprint,0,,,,,,0,,,,,,1250000,1250000,1250000,18700,1250000,1250000,1250000,market,10000002,The Forge
-25925,Large Stasis Drone Augmentor I Blueprint,0,,,,,,0,,,,,,1250000,1250000,1250000,18700,1250000,1250000,1250000,market,10000002,The Forge
 25929,Large Signal Disruption Amplifier I Blueprint,0,,,,,,0,,,,,,1250000,1250000,1250000,5780,1250000,1250000,1250000,market,10000002,The Forge
+25925,Large Stasis Drone Augmentor I Blueprint,0,,,,,,0,,,,,,1250000,1250000,1250000,18700,1250000,1250000,1250000,market,10000002,The Forge
 26007,Large Hybrid Burst Aerator I Blueprint,0,,,,,,0,,,,,,1250000,1250000,1250000,18700,1250000,1250000,1250000,market,10000002,The Forge
 45873,Incursus Exoplanets Hunter SKIN,0,,,,,,0,,,,,,1250000,1250000,1250000,3740,1250000,1250000,1250000,market,10000002,The Forge
 45789,Prophecy Exoplanets Hunter SKIN,0,,,,,,0,,,,,,1244000,1244000,1244000,1360,1244000,1244000,1244000,market,10000002,The Forge
@@ -486,6 +496,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 19407,8th Tier Overseer's Personal Effects,0,,,,,,0,,,,,,1201000,1201000,1201000,340,1201000,1201000,1201000,market,10000002,The Forge
 11462,R.Db - Core Complexion,0,,,,,,0,,,,,,1200000,1200000,1200000,42160,1200000,1200000,1200000,market,10000002,The Forge
 31562,Small Hybrid Locus Coordinator I,0,,,,,,0,,,,,,1200000,1200000,1200000,2720,1200000,1200000,1200000,market,10000002,The Forge
+61990,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,1196000,1196000,1196000,340,1196000,1196000,1196000,market,10000002,The Forge
 54161,Box of Chocolates,0,,,,,,0,,,,,,1116000,1116000,1116000,340,1116000,1116000,1116000,market,10000002,The Forge
 27111,Eifyr and Co. 'Rogue' Afterburner AB-602,0,,,,,,0,,,,,,1109000,1109000,1109000,340,1109000,1109000,1109000,market,10000002,The Forge
 55682,Panther Biosecurity Responders SKIN,0,,,,,,0,,,,,,1100000,1100000,1100000,340,1100000,1100000,1100000,market,10000002,The Forge
@@ -532,6 +543,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 55695,Scimitar Biosecurity Responders SKIN,0,,,,,,0,,,,,,829900,829900,829900,340,829900,829900,829900,market,10000002,The Forge
 57446,AG-Composite Molecular Condenser,0,,,,,,0,,,,,,1019900,814800,814800,5100,814800,1225000,814800,market,10000002,The Forge
 3831,Medium Shield Extender II,0,,,,,,0,,,,,,802700,802700,802700,118660,802700,802700,802700,market,10000002,The Forge
+62047,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,799800,799800,799800,340,799800,799800,799800,market,10000002,The Forge
 11327,1600mm Crystalline Carbonide Restrained Plates,0,,,,,,0,,,,,,797400,797400,797400,19720,797400,797400,797400,market,10000002,The Forge
 2889,200mm AutoCannon II,0,,,,,,0,,,,,,800250,790500,790500,167280,790500,810000,790500,market,10000002,The Forge
 55311,Apocalypse Biosecurity Responders SKIN,0,,,,,,0,,,,,,787700,787700,787700,1020,787700,787700,787700,market,10000002,The Forge
@@ -550,11 +562,13 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 7451,425mm Carbide Railgun I,0,,,,,,0,,,,,,689000,689000,689000,2720,689000,689000,689000,market,10000002,The Forge
 47750,Decayed 10MN Afterburner Mutaplasmid,0,,,,,,0,,,,,,673200,673200,673200,11220,673200,673200,673200,market,10000002,The Forge
 14063,Shadow Serpentis Kinetic Armor Hardener,0,,,,,,0,,,,,,669900,669900,669900,5780,669900,669900,669900,market,10000002,The Forge
+61981,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,658700,658700,658700,680,658700,658700,658700,market,10000002,The Forge
 57454,Oxy-Organic Solvents,0,,,,,,0,,,,,,655500,655500,655500,102000,655500,655500,655500,market,10000002,The Forge
 1422,Shield Power Relay II,0,,,,,,0,,,,,,647800,647800,647800,4420,647800,647800,647800,market,10000002,The Forge
 11561,Shield Boost Amplifier I,0,,,,,,0,,,,,,636500,636500,636500,6800,636500,636500,636500,market,10000002,The Forge
 25936,Large Gravity Capacitor Upgrade I,0,,,,,,0,,,,,,618000,618000,618000,340,618000,618000,618000,market,10000002,The Forge
 33003,Enormous Freight Container,0,,,,,,0,,,,,,616400,616400,616400,8840,616400,616400,616400,market,10000002,The Forge
+61996,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,600000,600000,600000,340,600000,600000,600000,market,10000002,The Forge
 33915,Medium Micro Jump Drive,0,,,,,,0,,,,,,599000,599000,599000,46920,599000,599000,599000,market,10000002,The Forge
 35006,Brutix Serpentis SKIN (30 Days),0,,,,,,0,,,,,,598800,598800,598800,1360,598800,598800,598800,market,10000002,The Forge
 12820,Scorch L,0,,,,,,0,,,,,,595500,595500,595500,56440,595500,595500,595500,market,10000002,The Forge
@@ -581,6 +595,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 42528,Mining Foreman Burst I,0,,,,,,0,,,,,,437700,437700,437700,11220,437700,437700,437700,market,10000002,The Forge
 37825,Dread Guristas Shield Flux Coil,0,,,,,,0,,,,,,422100,422100,422100,11220,422100,422100,422100,market,10000002,The Forge
 7749,Anode Mega Electron Particle Cannon I,0,,,,,,0,,,,,,412000,412000,412000,243100,412000,412000,412000,market,10000002,The Forge
+61998,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,400000,400000,400000,340,400000,400000,400000,market,10000002,The Forge
 35434,Prophecy Blood Raiders SKIN (30 Days),0,,,,,,0,,,,,,399000,399000,399000,340,399000,399000,399000,market,10000002,The Forge
 5759,Large I-b Polarized Structural Regenerator,0,,,,,,0,,,,,,398400,398400,398400,4760,398400,398400,398400,market,10000002,The Forge
 32819,Medium Ice Harvester Accelerator I,0,,,,,,0,,,,,,397700,397700,397700,10880,397700,397700,397700,market,10000002,The Forge
@@ -672,6 +687,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 25277,Lime Cytoserocin,0,,,,,,0,,,,,,104600,104600,104600,426360,104600,104600,104600,market,10000002,The Forge
 55683,Wolf Biosecurity Responders SKIN,0,,,,,,0,,,,,,102900,102900,102900,340,102900,102900,102900,market,10000002,The Forge
 60288,Coherent Asteroid Mining Crystal Type A II,0,,,,,,0,,,,,,101000,101000,101000,51000,101000,101000,101000,market,10000002,The Forge
+61980,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,100300,100300,100300,680,100300,100300,100300,market,10000002,The Forge
 27415,Dread Guristas Scourge Heavy Assault Missile,0,,,,,,0,,,,,,99850,99850,99850,340000,99850,99850,99850,market,10000002,The Forge
 23561,Garde I,0,,,,,,0,,,,,,99000,99000,99000,159460,99000,99000,99000,market,10000002,The Forge
 61097,Wightstorm Rapture Booster I,0,,,,,,0,,,,,,99000,99000,99000,1020,99000,99000,99000,market,10000002,The Forge
@@ -702,6 +718,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 15660,Republic Fleet Private Insignia III,0,,,,,,0,,,,,,69600,69600,69600,99960,69600,69600,69600,market,10000002,The Forge
 17244,Dread Guristas Crystal Tag,0,,,,,,0,,,,,,68000,68000,68000,35700,68000,68000,68000,market,10000002,The Forge
 61130,DSHR-01H Highsec Ice Storm Filament,0,,,,,,0,,,,,,333865,67730,67730,65620,67730,600000,67730,market,10000002,The Forge
+61995,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,1023690,67380,67380,2720,67380,1980000,67380,market,10000002,The Forge
 7665,Limited Ion Blaster I,0,,,,,,0,,,,,,65000,65000,65000,2720,65000,65000,65000,market,10000002,The Forge
 4871,Large Compact Pb-Acid Cap Battery,0,,,,,,0,,,,,,64690,64690,64690,5440,64690,64690,64690,market,10000002,The Forge
 25713,Experimental XT-2800 Heavy Assault Missile Launcher I,0,,,,,,0,,,,,,62990,62990,62990,340,62990,62990,62990,market,10000002,The Forge
@@ -737,6 +754,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 1274,Layered Coating I,0,,,,,,0,,,,,,33380,33380,33380,680,33380,33380,33380,market,10000002,The Forge
 54785,StrikeSnipe Ultra M,0,,,,,,0,,,,,,31850,31850,31850,102000,31850,31850,31850,market,10000002,The Forge
 1539,Power Diagnostic System I,0,,,,,,0,,,,,,30510,30510,30510,413100,30510,30510,30510,market,10000002,The Forge
+62039,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,30000,30000,30000,9180,30000,30000,30000,market,10000002,The Forge
 393,Shield Recharger I,0,,,,,,0,,,,,,29990,29990,29990,1700,29990,29990,29990,market,10000002,The Forge
 1353,Reactor Control Unit I,0,,,,,,0,,,,,,29990,29990,29990,1360,29990,29990,29990,market,10000002,The Forge
 29001,Tracking Speed Script,0,,,,,,0,,,,,,29930,29930,29930,4420,29930,29930,29930,market,10000002,The Forge
@@ -750,6 +768,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 20971,Guardian Uranium Charge M,0,,,,,,0,,,,,,23650,23650,23650,612000,23650,23650,23650,market,10000002,The Forge
 19810,Peripheral Compact Target Painter,0,,,,,,0,,,,,,22600,22600,22600,79560,22600,22600,22600,market,10000002,The Forge
 20781,Domination Phased Plasma M,0,,,,,,0,,,,,,22480,22480,22480,5440,22480,22480,22480,market,10000002,The Forge
+62045,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,21980,21980,21980,38420,21980,21980,21980,market,10000002,The Forge
 4025,X5 Enduring Stasis Webifier,0,,,,,,0,,,,,,35790,21960,21960,333880,21960,49620,21960,market,10000002,The Forge
 25604,Conductive Polymer,0,,,,,,0,,,,,,21960,21960,21960,340,21960,21960,21960,market,10000002,The Forge
 28668,Nanite Repair Paste,0,,,,,,0,,,,,,21380,21380,21380,1346400,21380,21380,21380,market,10000002,The Forge
@@ -757,6 +776,7 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 672,Caldari Shuttle,0,,,,,,0,,,,,,20990,20990,20990,47260,20990,20990,20990,market,10000002,The Forge
 8023,Upgraded 'Malkuth' Rapid Light Missile Launcher,0,,,,,,0,,,,,,20980,20980,20980,680,20980,20980,20980,market,10000002,The Forge
 19935,Languid Enduring Ladar ECM,0,,,,,,0,,,,,,20500,20500,20500,680,20500,20500,20500,market,10000002,The Forge
+62033,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,20000,20000,20000,20060,20000,20000,20000,market,10000002,The Forge
 6485,M51 Benefactor Compact Shield Recharger,0,,,,,,0,,,,,,19980,19980,19980,1360,19980,19980,19980,market,10000002,The Forge
 47765,Calm Electrical Filament,0,,,,,,0,,,,,,19970,19970,19970,6460,19970,19970,19970,market,10000002,The Forge
 443,Ship Scanner I,0,,,,,,0,,,,,,19600,19600,19600,29920,19600,19600,19600,market,10000002,The Forge
@@ -786,7 +806,9 @@ typeID,typeName,soloContracts,meanSoloPrice,medianSoloPrice,modeSoloPrice,minSol
 54771,BlastShot Condenser Pack S,0,,,,,,0,,,,,,10430,10430,10430,1264800,10430,10430,10430,market,10000002,The Forge
 3810,Marines,0,,,,,,0,,,,,,10000,10000,10000,35020,10000,10000,10000,market,10000002,The Forge
 5091,Small Inductive Compact Remote Capacitor Transmitter,0,,,,,,0,,,,,,10000,10000,10000,2040,10000,10000,10000,market,10000002,The Forge
+62274,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,10000,10000,10000,1360,10000,10000,10000,market,10000002,The Forge
 48420,Decayed Medium Energy Nosferatu Mutaplasmid,0,,,,,,0,,,,,,9999,9999,9999,1020,9999,9999,9999,market,10000002,The Forge
+61989,Magnate Warp Convergence SKIN,0,,,,,,0,,,,,,9990,9990,9990,340,9990,9990,9990,market,10000002,The Forge
 30306,Methanofullerene,0,,,,,,0,,,,,,11419,12900,9937,1058080,9937,12900,9937,market,10000002,The Forge
 30305,Fullerene Intercalated Graphite,0,,,,,,0,,,,,,9930,9930,9930,1305260,9930,9930,9930,market,10000002,The Forge
 6131,Type-E Enduring Cargo Scanner,0,,,,,,0,,,,,,17740,9479,9479,2040,9479,26000,9479,market,10000002,The Forge

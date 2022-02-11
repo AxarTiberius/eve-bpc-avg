@@ -4,10 +4,15 @@ var axarTelemetry = require('axar-telemetry')
 var mr = require('micro-request')
 var async = require('async')
 var sqlite3 = require('sqlite3').verbose()
-// var api_base = 'https://esi.evetech.net/latest/'
+var api_base = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
 var csvStringify = require('csv-stringify/sync').stringify
 var assert = require('assert')
+var querystring = require('querystring')
+var idgen = require('idgen')
+var runId = idgen()
+console.log('runId', runId)
+
 /*
 if (!fs.existsSync('./data/eve.sqlite')) {
   console.error('Please run ./get-db.sh first')
@@ -18,6 +23,7 @@ if (!fs.existsSync('./data/eve.sqlite')) {
 var sampleContractsPage = require('./contracts_jita_p1.json')
 var sampleContractItems = require('./contract.json')
 var sampleOrdersPage = require('./orders_jita_p220.json')
+var sampleType = require('./sample_type.json')
 
 var
   taskLimit =         64,
@@ -67,16 +73,18 @@ const db = new sqlite3.Database('eve-bpcs.sqlite')
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');
 
+var connectBackend = require('./mongo-backend')
+var tele, mongo, cache, mongoClient
+
 function apiRequest (method, path, postData, onRes) {
   if (typeof postData === 'function') {
     onRes = postData
     postData = null
   }
   postData || (postData = {})
-  const req_start = new Date()
-  var mockResponseTime, mockResponse
+  var mockResponseTime = 0, mockResponse
   var contractsPublicMatch = path.match(/^contracts\/public\/([\d]+)\/$/)
-  var type
+  var type, cacheExpire
   if (contractsPublicMatch) {
     type = 'list_contracts'
     mockResponseTime = 1200
@@ -89,12 +97,14 @@ function apiRequest (method, path, postData, onRes) {
     else if (postData.page === 5) {
       mockResponse = [].slice.call(mockResponse, 1)
     }
+    cacheExpire = 1800000
   }
   var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
   if (contractsPublicItemsMatch) {
     type = 'contract_items'
     mockResponseTime = 400
     mockResponse = sampleContractItems
+    cacheExpire = 3600000
   }
   var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
   if (marketOrdersMatch) {
@@ -109,34 +119,82 @@ function apiRequest (method, path, postData, onRes) {
     else if (postData.page === 30) {
       mockResponse = [].slice.call(mockResponse, 1)
     }
+    // On ESI's side, 300 seconds
+    cacheExpire = 1800000
   }
-  mockResponseTime += 200
-  setTimeout(function () {
-    var totalTime = new Date().getTime() - req_start
-    // console.log('completed', path, 'in', totalTime, 'ms')
-    var resp = {
-      statusCode: 200
+  var typeLookupMatch = path.match(/^universe\/types\/([\d]+)\/$/)
+  if (typeLookupMatch) {
+    type = 'type_lookup'
+    mockResponseTime = 500
+    mockResponse = sampleType
+    cacheExpire = 86400000
+  }
+
+  var cacheKey = method + '+' + api_base + path
+  if (Object.keys(postData).length) {
+    cacheKey += '?' + querystring.stringify(postData)
+  }
+  // console.log('cacheKey', cacheKey)
+  if (!type) {
+    throw new Error('unknown API request: ' + cacheKey)
+  }
+  var resp = {
+    statusCode: 200
+  }
+
+  cache.findOne({_id: cacheKey, timestamp: {$gt: new Date().getTime() - cacheExpire}}, function (err, doc) {
+    if (err) return onRes(err)
+    if (doc) {
+      return onRes(null, doc.body, {statusCode: doc.statusCode})
     }
-    tele.record({type, totalTime})
-    onRes(null, mockResponse, resp)
-  }, mockResponseTime)
+    doRequest()
+  })
+  function doRequest () {
+    const reqStart = new Date()
+    mockResponseTime += 200
+    setTimeout(function () {
+      var totalTime = new Date().getTime() - reqStart
+      // console.log('completed', path, 'in', totalTime, 'ms')
+
+      tele.record({type, totalTime, runId})
+
+      var cacheEntry = {
+        _id: cacheKey,
+        type: type,
+        timestamp: new Date().getTime(),
+        responseTime: mockResponseTime,
+        body: mockResponse,
+        headers: null,
+        statusCode: resp.statusCode
+      }
+      cache.insertOne(cacheEntry, function (err) {
+        if (err) return onRes(err)
+        onRes(null, mockResponse, resp)
+      })
+    }, mockResponseTime)
+  }
+}
+
+function doBackendConnect (connectDone) {
+  axarTelemetry({dbName: 'eve-bpc-avg-mock'}, function (err, teleInstance) {
+    if (err) return connectDone(err)
+    tele = teleInstance
+    connectBackend({dbName: 'eve-bpc-avg-mock'}, function (err, _client, _db) {
+      if (err) return connectDone(err)
+      mongo = _db
+      cache = mongo.collection('cache')
+      mongoClient = _client
+      cache.createIndex({timestamp: -1, type: 1}, function (err) {
+        if (err) return connectDone(err)
+        connectDone()
+      })
+    })
+  })
 }
 
 var rows = [
   csvHeaders
 ], results = {items: {}}
-
-var tele
-
-axarTelemetry({dbName: 'eve-bpc-avg-mock'}, function (err, teleInstance) {
-  if (err) throw err
-  tele = teleInstance
-  async.series([
-    doRegionContracts,
-    doRegionOrders
-  ], finalize)
-})
-
 function doRegionContracts (contractsDone) {
   async.reduce(hub_ids, null, function (_ignore, regionID, done) {
     // type: 1 is item_exchange
@@ -605,5 +663,12 @@ function finalize (err) {
     })
     file.end()
     tele.close()
+    mongoClient.close()
   })
 }
+
+async.series([
+  doBackendConnect,
+  doRegionContracts,
+  doRegionOrders
+], finalize)
