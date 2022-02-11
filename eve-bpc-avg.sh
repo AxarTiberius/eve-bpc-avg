@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
+var axarTelemetry = require('axar-telemetry')
 var mr = require('micro-request')
 var async = require('async')
 var sqlite3 = require('sqlite3').verbose()
-var api_base = 'https://esi.evetech.net/latest/'
+// var api_base = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
 var csvStringify = require('csv-stringify/sync').stringify
 var assert = require('assert')
@@ -13,6 +14,10 @@ if (!fs.existsSync('./data/eve.sqlite')) {
   process.exit(1)
 }
 */
+
+var sampleContractsPage = require('./contracts_jita_p1.json')
+var sampleContractItems = require('./contract.json')
+var sampleOrdersPage = require('./orders_jita_p220.json')
 
 var
   taskLimit =         64,
@@ -67,60 +72,69 @@ function apiRequest (method, path, postData, onRes) {
     onRes = postData
     postData = null
   }
-  postData || (postData = {});
-  postData.datasource || (postData.datasource = 'tranquility');
-  var headers = {
-    'Accept': 'application/json',
-    'Cache-Control': 'no-cache'
-  }
-  if (accessToken) {
-    headers['Authorization'] = 'Bearer ' + accessToken
-  }
-  //console.log('api req ', method, path)
+  postData || (postData = {})
   const req_start = new Date()
-  const reqUrl = api_base + path
-  const query = JSON.parse(JSON.stringify(postData))
-  ;(function retry () {
-    mr[method.toLowerCase()](reqUrl, {headers, query, timeout: apiTimeout}, function (err, resp, body) {
-      console.log(body)
-      if (err) {
-        if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
-          //console.error('warning: connection error for ' + path + ', retrying')
-          return retry()
-        }
-        return onRes(err)
+  var mockResponseTime, mockResponse
+  var contractsPublicMatch = path.match(/^contracts\/public\/([\d]+)\/$/)
+  var type
+  if (contractsPublicMatch) {
+    type = 'list_contracts'
+    mockResponseTime = Math.random() * (1448 - 909) + 909
+    mockResponse = sampleContractsPage
+    if (contractsPublicMatch[1] === '10000002') {
+      if (postData.page === 25) {
+        mockResponse = [].slice.call(mockResponse, 1)
       }
-      var total_time = new Date().getTime() - req_start
-      //console.log('completed', path, 'in', total_time, 'ms', resp.statusCode)
-      if (Buffer.isBuffer(body)) {
-        body = body.toString('utf8')
+    }
+    else if (postData.page === 5) {
+      mockResponse = [].slice.call(mockResponse, 1)
+    }
+  }
+  var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
+  if (contractsPublicItemsMatch) {
+    type = 'contract_items'
+    mockResponseTime = Math.random() * (600 - 300) + 300
+    mockResponse = sampleContractItems
+  }
+  var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
+  if (marketOrdersMatch) {
+    type = 'list_orders'
+    mockResponseTime = Math.random() * (6524 - 575) + 575
+    mockResponse = sampleOrdersPage
+    if (marketOrdersMatch[1] === '10000002') {
+      if (postData.page === 220) {
+        mockResponse = [].slice.call(mockResponse, 1)
       }
-      if (typeof body === 'string' && body.length) {
-        try {
-          body = JSON.parse(body)
-        }
-        catch (e) {
-          //console.error('unexpected api response: ' + body)
-          return retry()
-          body = {}
-        }
-      }
-      if (!body) {
-        body = {}
-      }
-      onRes(null, body, resp)
-    })
-  })()
+    }
+    else if (postData.page === 30) {
+      mockResponse = [].slice.call(mockResponse, 1)
+    }
+  }
+  setTimeout(function () {
+    var totalTime = new Date().getTime() - req_start
+    // console.log('completed', path, 'in', totalTime, 'ms')
+    var resp = {
+      statusCode: 200
+    }
+    tele.record({type, totalTime})
+    onRes(null, mockResponse, resp)
+  }, mockResponseTime)
 }
 
 var rows = [
   csvHeaders
 ], results = {items: {}}
 
-async.series([
-  doRegionContracts,
-  doRegionOrders
-], finalize)
+var tele
+
+axarTelemetry({dbName: 'eve-bpc-avg-mock'}, function (err, teleInstance) {
+  if (err) throw err
+  tele = teleInstance
+  async.series([
+    doRegionContracts,
+    doRegionOrders
+  ], finalize)
+})
 
 function doRegionContracts (contractsDone) {
   async.reduce(hub_ids, null, function (_ignore, regionID, done) {
@@ -131,7 +145,7 @@ function doRegionContracts (contractsDone) {
     async.doWhilst(function (pageCb) {
       // create new progress bar
       const b1 = new cliProgress.SingleBar({
-        format: 'Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
+        format: '(MOCK) Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
         barCompleteChar: '\u2588',
         barIncompleteChar: '\u2591',
         hideCursor: true
@@ -224,10 +238,10 @@ function doRegionContracts (contractsDone) {
                   }
                 })
                 if (contract.reward) {
-                  console.error('reward for all included?', regionID, contract, items)
+                  //console.error('reward for all included?', regionID, contract, items)
                 }
                 if (!contract.price) {
-                  console.error('free??', regionID, contract, items)
+                  //console.error('free??', regionID, contract, items)
                 }
               }
               b1.increment(1, {
@@ -261,7 +275,7 @@ function doRegionOrders (ordersDone) {
 
     // create new progress bar
     const b1 = new cliProgress.SingleBar({
-      format: 'Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} x1000 Orders || Speed: {speed}',
+      format: '(MOCK) Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} x1000 Orders || Speed: {speed}',
       barCompleteChar: '\u2588',
       barIncompleteChar: '\u2591',
       hideCursor: true
@@ -340,7 +354,7 @@ function finalize (err) {
   var numItems = Object.keys(results.items).length
   console.error('Found', numItems, 'unique items.')
   const b1 = new cliProgress.SingleBar({
-    format: 'Looking up items... |' + colors.yellow('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
+    format: '(MOCK) Looking up items... |' + colors.yellow('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true
@@ -565,9 +579,9 @@ function finalize (err) {
     if (err) throw err
     b1.stop();
     console.log('data collected! writing CSV...')
-    var file = fs.createWriteStream('./output.csv')
+    var file = fs.createWriteStream('./output_mock.csv')
     file.once('finish', function () {
-      console.log('wrote', './output.csv with', rows.length, 'rows')
+      console.log('wrote', './output_mock.csv with', rows.length, 'rows')
       db.close()
       process.exit(0)
     })
@@ -589,5 +603,6 @@ function finalize (err) {
       file.write(csvStringify([row]))
     })
     file.end()
+    tele.close()
   })
 }
