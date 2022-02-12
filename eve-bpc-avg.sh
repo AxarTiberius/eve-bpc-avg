@@ -26,11 +26,11 @@ var sampleOrdersPage = require('./orders_jita_p220.json')
 var sampleType = require('./sample_type.json')
 
 var
-  taskLimit =         64,
+  taskLimit =         8,
   sortIndex =         20,
   pageLimit =         1000,
   apiTimeout =        5000,
-  itemLookupLimit =   64,
+  itemLookupLimit =   8,
   itemLookupTimeout = 0,
   orderProgressMax =  250
 
@@ -159,7 +159,7 @@ function apiRequest (method, path, postData, onRes) {
   function doRequest () {
     const reqStart = new Date()
     // (this would be the http request)
-    mockResponseTime += 200
+    mockResponseTime += 5000
     // (end request)
     setTimeout(function () {
       var totalTime = new Date().getTime() - reqStart
