@@ -26,11 +26,11 @@ var sampleOrdersPage = require('./orders_jita_p220.json')
 var sampleType = require('./sample_type.json')
 
 var
-  taskLimit =         8,
+  taskLimit =         64,
   sortIndex =         20,
   pageLimit =         1000,
   apiTimeout =        5000,
-  itemLookupLimit =   8,
+  itemLookupLimit =   64,
   itemLookupTimeout = 0,
   orderProgressMax =  250
 
@@ -151,7 +151,7 @@ function apiRequest (method, path, postData, onRes) {
 
   cache.findOne({_id: cacheKey, timestamp: {$gt: new Date().getTime() - cacheExpire}}, function (err, doc) {
     if (err) return onRes(err)
-    if (doc) {
+    if (false) { //doc) {
       return onRes(null, doc.body, {statusCode: doc.statusCode})
     }
     doRequest()
@@ -159,7 +159,7 @@ function apiRequest (method, path, postData, onRes) {
   function doRequest () {
     const reqStart = new Date()
     // (this would be the http request)
-    mockResponseTime += 5000
+    mockResponseTime += 200
     // (end request)
     setTimeout(function () {
       var totalTime = new Date().getTime() - reqStart
@@ -176,7 +176,7 @@ function apiRequest (method, path, postData, onRes) {
         headers: null,
         statusCode: resp.statusCode
       }
-      cache.insertOne(cacheEntry, function (err) {
+      cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
         if (err) return onRes(err)
         onRes(null, mockResponse, resp)
       })

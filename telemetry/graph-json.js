@@ -3,7 +3,7 @@ var axarTelemetry = require('axar-telemetry')
 var async = require('async')
 var timebucket = require('timebucket')
 
-var interval = '30m'
+var interval = '1m'
 var lookback = 3
 
 console.log('starting')

@@ -27,6 +27,7 @@
               text: 'API Requests/min',
               left: 10
             },
+            legend: {},
             toolbox: {
               feature: {
                 dataZoom: {
@@ -65,6 +66,11 @@
               }
             },
             yAxis: {
+              type: 'value',
+              name: 'Requests/min',
+              axisLabel: {
+                formatter: '{value}/min'
+              },
               splitArea: {
                 show: false
               }

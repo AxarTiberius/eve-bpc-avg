@@ -1,207 +1,119 @@
 {
   "contract_items": [
     {
-      "time": 1644613692722,
-      "count": 1920,
-      "sum": 1920,
+      "time": 1644650082042,
+      "count": 1704,
+      "sum": 1704,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 1920
+      "lookbackAvg": 1704
     },
     {
-      "time": 1644615000000,
-      "count": 2640,
-      "sum": 2640,
+      "time": 1644650100000,
+      "count": 5296,
+      "sum": 5296,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2640
+      "lookbackAvg": 5296
     },
     {
-      "time": 1644616800000,
-      "count": 2640,
-      "sum": 2640,
+      "time": 1644650160000,
+      "count": 5384,
+      "sum": 5384,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2640
+      "lookbackAvg": 5384
     },
     {
-      "time": 1644618600000,
-      "count": 2648,
-      "sum": 2648,
+      "time": 1644650220000,
+      "count": 5448,
+      "sum": 5448,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2462
+      "lookbackAvg": 4458
     },
     {
-      "time": 1644620400000,
-      "count": 2640,
-      "sum": 2640,
+      "time": 1644650280000,
+      "count": 5232,
+      "sum": 5232,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2642
+      "lookbackAvg": 5340
     },
     {
-      "time": 1644622200000,
-      "count": 2632,
-      "sum": 2632,
+      "time": 1644650340000,
+      "count": 5447,
+      "sum": 5447,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2640
+      "lookbackAvg": 5377.75
     },
     {
-      "time": 1644624000000,
-      "count": 2648,
-      "sum": 2648,
+      "time": 1644650400000,
+      "count": 5447,
+      "sum": 5447,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2642
+      "lookbackAvg": 5393.5
     },
     {
-      "time": 1644625800000,
-      "count": 2640,
-      "sum": 2640,
+      "time": 1644650460000,
+      "count": 5231,
+      "sum": 5231,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2640
+      "lookbackAvg": 5339.25
     },
     {
-      "time": 1644627600000,
-      "count": 2640,
-      "sum": 2640,
+      "time": 1644650520000,
+      "count": 5415,
+      "sum": 5415,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2640
+      "lookbackAvg": 5385
     },
     {
-      "time": 1644629400000,
-      "count": 2647,
-      "sum": 2647,
+      "time": 1644650580000,
+      "count": 391,
+      "sum": 391,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2643.75
-    },
-    {
-      "time": 1644631200000,
-      "count": 2640,
-      "sum": 2640,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2641.75
-    },
-    {
-      "time": 1644633000000,
-      "count": 2639,
-      "sum": 2639,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2641.5
-    },
-    {
-      "time": 1644634800000,
-      "count": 2640,
-      "sum": 2640,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2641.5
-    },
-    {
-      "time": 1644636600000,
-      "count": 2639,
-      "sum": 2639,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2639.5
-    },
-    {
-      "time": 1644638400000,
-      "count": 2648,
-      "sum": 2648,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2641.5
-    },
-    {
-      "time": 1644640200000,
-      "count": 2639,
-      "sum": 2639,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2641.5
-    },
-    {
-      "time": 1644642000000,
-      "count": 2632,
-      "sum": 2632,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2639.5
-    },
-    {
-      "time": 1644643800000,
-      "count": 823,
-      "sum": 823,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2185.5
+      "lookbackAvg": 4121
     }
   ],
   "list_contracts": [
     {
-      "time": 1644613692722,
+      "time": 1644650082042,
       "count": 2,
       "sum": 2,
       "avg": 1,
@@ -212,185 +124,97 @@
       "lookbackAvg": 2
     },
     {
-      "time": 1644615000000,
-      "count": 3,
-      "sum": 3,
+      "time": 1644650100000,
+      "count": 5,
+      "sum": 5,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 3
+      "lookbackAvg": 5
     },
     {
-      "time": 1644616800000,
-      "count": 3,
-      "sum": 3,
+      "time": 1644650160000,
+      "count": 6,
+      "sum": 6,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 3
+      "lookbackAvg": 6
     },
     {
-      "time": 1644618600000,
-      "count": 2,
-      "sum": 2,
+      "time": 1644650220000,
+      "count": 5,
+      "sum": 5,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2.5
+      "lookbackAvg": 4.5
     },
     {
-      "time": 1644620400000,
-      "count": 3,
-      "sum": 3,
+      "time": 1644650280000,
+      "count": 6,
+      "sum": 6,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2.75
+      "lookbackAvg": 5.5
     },
     {
-      "time": 1644622200000,
-      "count": 3,
-      "sum": 3,
+      "time": 1644650340000,
+      "count": 5,
+      "sum": 5,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2.75
+      "lookbackAvg": 5.5
     },
     {
-      "time": 1644624000000,
-      "count": 2,
-      "sum": 2,
+      "time": 1644650400000,
+      "count": 5,
+      "sum": 5,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2.5
+      "lookbackAvg": 5.25
     },
     {
-      "time": 1644625800000,
-      "count": 3,
-      "sum": 3,
+      "time": 1644650460000,
+      "count": 6,
+      "sum": 6,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2.75
+      "lookbackAvg": 5.5
     },
     {
-      "time": 1644627600000,
-      "count": 3,
-      "sum": 3,
+      "time": 1644650520000,
+      "count": 5,
+      "sum": 5,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2.75
-    },
-    {
-      "time": 1644629400000,
-      "count": 2,
-      "sum": 2,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.5
-    },
-    {
-      "time": 1644631200000,
-      "count": 3,
-      "sum": 3,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.75
-    },
-    {
-      "time": 1644633000000,
-      "count": 2,
-      "sum": 2,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.5
-    },
-    {
-      "time": 1644634800000,
-      "count": 3,
-      "sum": 3,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.5
-    },
-    {
-      "time": 1644636600000,
-      "count": 3,
-      "sum": 3,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.75
-    },
-    {
-      "time": 1644638400000,
-      "count": 2,
-      "sum": 2,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.5
-    },
-    {
-      "time": 1644640200000,
-      "count": 3,
-      "sum": 3,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.75
-    },
-    {
-      "time": 1644642000000,
-      "count": 3,
-      "sum": 3,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2.75
+      "lookbackAvg": 5.25
     }
   ],
   "list_orders": [
     {
-      "time": 1644613692722,
+      "time": 1644650082042,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -401,7 +225,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644615000000,
+      "time": 1644650100000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -412,7 +236,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644616800000,
+      "time": 1644650160000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -423,7 +247,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644618600000,
+      "time": 1644650220000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -434,7 +258,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644620400000,
+      "time": 1644650280000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -445,7 +269,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644622200000,
+      "time": 1644650340000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -456,7 +280,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644624000000,
+      "time": 1644650400000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -467,7 +291,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644625800000,
+      "time": 1644650460000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -478,7 +302,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644627600000,
+      "time": 1644650520000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -489,119 +313,86 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644629400000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644631200000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644633000000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644634800000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644636600000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644638400000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644640200000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644642000000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644643800000,
-      "count": 207,
-      "sum": 207,
+      "time": 1644650580000,
+      "count": 46,
+      "sum": 46,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 51.75
+      "lookbackAvg": 11.5
     },
     {
-      "time": 1644645600000,
-      "count": 133,
-      "sum": 133,
+      "time": 1644650640000,
+      "count": 50,
+      "sum": 50,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 85
+      "lookbackAvg": 24
+    },
+    {
+      "time": 1644650700000,
+      "count": 49,
+      "sum": 49,
+      "avg": 1,
+      "max": 1,
+      "min": 1,
+      "open": 1,
+      "close": 1,
+      "lookbackAvg": 36.25
+    },
+    {
+      "time": 1644650760000,
+      "count": 50,
+      "sum": 50,
+      "avg": 1,
+      "max": 1,
+      "min": 1,
+      "open": 1,
+      "close": 1,
+      "lookbackAvg": 48.75
+    },
+    {
+      "time": 1644650820000,
+      "count": 50,
+      "sum": 50,
+      "avg": 1,
+      "max": 1,
+      "min": 1,
+      "open": 1,
+      "close": 1,
+      "lookbackAvg": 49.75
+    },
+    {
+      "time": 1644650880000,
+      "count": 49,
+      "sum": 49,
+      "avg": 1,
+      "max": 1,
+      "min": 1,
+      "open": 1,
+      "close": 1,
+      "lookbackAvg": 49.5
+    },
+    {
+      "time": 1644650940000,
+      "count": 46,
+      "sum": 46,
+      "avg": 1,
+      "max": 1,
+      "min": 1,
+      "open": 1,
+      "close": 1,
+      "lookbackAvg": 48.75
     }
   ],
   "type_lookup": [
     {
-      "time": 1644613692722,
+      "time": 1644650082042,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -612,7 +403,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644615000000,
+      "time": 1644650100000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -623,7 +414,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644616800000,
+      "time": 1644650160000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -634,7 +425,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644618600000,
+      "time": 1644650220000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -645,7 +436,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644620400000,
+      "time": 1644650280000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -656,7 +447,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644622200000,
+      "time": 1644650340000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -667,7 +458,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644624000000,
+      "time": 1644650400000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -678,7 +469,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644625800000,
+      "time": 1644650460000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -689,7 +480,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644627600000,
+      "time": 1644650520000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -700,7 +491,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644629400000,
+      "time": 1644650580000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -711,7 +502,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644631200000,
+      "time": 1644650640000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -722,7 +513,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644633000000,
+      "time": 1644650700000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -733,7 +524,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644634800000,
+      "time": 1644650760000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -744,7 +535,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644636600000,
+      "time": 1644650820000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -755,7 +546,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644638400000,
+      "time": 1644650880000,
       "count": 0,
       "sum": 0,
       "avg": null,
@@ -766,40 +557,7 @@
       "lookbackAvg": 0
     },
     {
-      "time": 1644640200000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644642000000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644643800000,
-      "count": 0,
-      "sum": 0,
-      "avg": null,
-      "max": null,
-      "min": null,
-      "open": null,
-      "close": null,
-      "lookbackAvg": 0
-    },
-    {
-      "time": 1644645600000,
+      "time": 1644650940000,
       "count": 22,
       "sum": 22,
       "avg": 1,
@@ -812,213 +570,180 @@
   ],
   "all": [
     {
-      "time": 1644613692722,
-      "count": 1922,
-      "sum": 1922,
+      "time": 1644650082042,
+      "count": 1706,
+      "sum": 1706,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 1922
+      "lookbackAvg": 1706
     },
     {
-      "time": 1644615000000,
-      "count": 2643,
-      "sum": 2643,
+      "time": 1644650100000,
+      "count": 5301,
+      "sum": 5301,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2643
+      "lookbackAvg": 5301
     },
     {
-      "time": 1644616800000,
-      "count": 2643,
-      "sum": 2643,
+      "time": 1644650160000,
+      "count": 5390,
+      "sum": 5390,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2643
+      "lookbackAvg": 5390
     },
     {
-      "time": 1644618600000,
-      "count": 2650,
-      "sum": 2650,
+      "time": 1644650220000,
+      "count": 5453,
+      "sum": 5453,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2464.5
+      "lookbackAvg": 4462.5
     },
     {
-      "time": 1644620400000,
-      "count": 2643,
-      "sum": 2643,
+      "time": 1644650280000,
+      "count": 5238,
+      "sum": 5238,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2644.75
+      "lookbackAvg": 5345.5
     },
     {
-      "time": 1644622200000,
-      "count": 2635,
-      "sum": 2635,
+      "time": 1644650340000,
+      "count": 5452,
+      "sum": 5452,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2642.75
+      "lookbackAvg": 5383.25
     },
     {
-      "time": 1644624000000,
-      "count": 2650,
-      "sum": 2650,
+      "time": 1644650400000,
+      "count": 5452,
+      "sum": 5452,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2644.5
+      "lookbackAvg": 5398.75
     },
     {
-      "time": 1644625800000,
-      "count": 2643,
-      "sum": 2643,
+      "time": 1644650460000,
+      "count": 5237,
+      "sum": 5237,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2642.75
+      "lookbackAvg": 5344.75
     },
     {
-      "time": 1644627600000,
-      "count": 2643,
-      "sum": 2643,
+      "time": 1644650520000,
+      "count": 5420,
+      "sum": 5420,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2642.75
+      "lookbackAvg": 5390.25
     },
     {
-      "time": 1644629400000,
-      "count": 2649,
-      "sum": 2649,
+      "time": 1644650580000,
+      "count": 437,
+      "sum": 437,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2646.25
+      "lookbackAvg": 4136.5
     },
     {
-      "time": 1644631200000,
-      "count": 2643,
-      "sum": 2643,
+      "time": 1644650640000,
+      "count": 50,
+      "sum": 50,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2644.5
+      "lookbackAvg": 2786
     },
     {
-      "time": 1644633000000,
-      "count": 2641,
-      "sum": 2641,
+      "time": 1644650700000,
+      "count": 49,
+      "sum": 49,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2644
+      "lookbackAvg": 1489
     },
     {
-      "time": 1644634800000,
-      "count": 2643,
-      "sum": 2643,
+      "time": 1644650760000,
+      "count": 50,
+      "sum": 50,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2644
+      "lookbackAvg": 146.5
     },
     {
-      "time": 1644636600000,
-      "count": 2642,
-      "sum": 2642,
+      "time": 1644650820000,
+      "count": 50,
+      "sum": 50,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2642.25
+      "lookbackAvg": 49.75
     },
     {
-      "time": 1644638400000,
-      "count": 2650,
-      "sum": 2650,
+      "time": 1644650880000,
+      "count": 49,
+      "sum": 49,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2644
+      "lookbackAvg": 49.5
     },
     {
-      "time": 1644640200000,
-      "count": 2642,
-      "sum": 2642,
+      "time": 1644650940000,
+      "count": 68,
+      "sum": 68,
       "avg": 1,
       "max": 1,
       "min": 1,
       "open": 1,
       "close": 1,
-      "lookbackAvg": 2644.25
-    },
-    {
-      "time": 1644642000000,
-      "count": 2635,
-      "sum": 2635,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2642.25
-    },
-    {
-      "time": 1644643800000,
-      "count": 1030,
-      "sum": 1030,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 2239.25
-    },
-    {
-      "time": 1644645600000,
-      "count": 155,
-      "sum": 155,
-      "avg": 1,
-      "max": 1,
-      "min": 1,
-      "open": 1,
-      "close": 1,
-      "lookbackAvg": 1615.5
+      "lookbackAvg": 54.25
     }
   ]
 }
