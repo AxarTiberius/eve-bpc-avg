@@ -18,15 +18,10 @@
       var option;
 
       $.get(
-        '/telemetry-mock.json',
-        function (jsonData) {
+        '/results.json',
+        function (results) {
           var categoryData = []
           var valueData = []
-          jsonData.forEach(function (item) {
-            categoryData.push(echarts.format.formatTime('yyyy-MM-dd\nhh:mm:ss', new Date(item.time), false))
-            valueData.push(item.lookbackAvg)
-          })
-          const dataCount = jsonData.length
           option = {
             title: {
               text: 'API Requests/min',
@@ -74,18 +69,33 @@
                 show: false
               }
             },
-            series: [
-              {
-                type: 'bar',
-                data: valueData,
-                // Set `large` for large data amount
-                large: true
-              }
-            ]
+            series: []
           };
+          if (!results || !results.all) {
+            console.error('bad results', results)
+            myChart.setOption(option);
+            return
+          }
+          results.all.forEach(function (item) {
+            categoryData.push(echarts.format.formatTime('yyyy-MM-dd\nhh:mm:ss', new Date(item.time), false))
+          })
+          Object.keys(results).forEach(function (eventType, idx) {
+            var seriesData = []
+            results[eventType].forEach(function (item) {
+              seriesData.push(item.sum)
+            })
+            option.series.push({
+              data: seriesData,
+              // smooth: true,
+              name: eventType,
+              type: 'line',
+              //yAxisIndex: idx,
+              // stack: 'x',
+              //large: true
+            })
+          })
           myChart.setOption(option);
         })
-
     </script>
   </main>
 </body>

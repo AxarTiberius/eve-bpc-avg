@@ -10,7 +10,7 @@ var csvStringify = require('csv-stringify/sync').stringify
 var assert = require('assert')
 var querystring = require('querystring')
 var idgen = require('idgen')
-var runId = idgen()
+var runId = idgen(6)
 console.log('runId', runId)
 
 /*
@@ -26,12 +26,12 @@ var sampleOrdersPage = require('./orders_jita_p220.json')
 var sampleType = require('./sample_type.json')
 
 var
-  taskLimit =         64,
+  taskLimit =         8,
   sortIndex =         20,
   pageLimit =         1000,
   apiTimeout =        5000,
-  itemLookupLimit =   64,
-  itemLookupTimeout = 64,
+  itemLookupLimit =   8,
+  itemLookupTimeout = 0,
   orderProgressMax =  250
 
 // optional authentication
@@ -97,14 +97,18 @@ function apiRequest (method, path, postData, onRes) {
     else if (postData.page === 5) {
       mockResponse = [].slice.call(mockResponse, 1)
     }
-    cacheExpire = 1800000
+    // On ESI's side, 30 mins
+    // 20 hours
+    cacheExpire = 10e6*7.2
   }
   var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
   if (contractsPublicItemsMatch) {
     type = 'contract_items'
     mockResponseTime = 400
     mockResponse = sampleContractItems
-    cacheExpire = 3600000
+    // On ESI's side, 1 hour
+    // 90 days
+    cacheExpire = 10e8*7.776
   }
   var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
   if (marketOrdersMatch) {
@@ -119,15 +123,18 @@ function apiRequest (method, path, postData, onRes) {
     else if (postData.page === 30) {
       mockResponse = [].slice.call(mockResponse, 1)
     }
-    // On ESI's side, 300 seconds
-    cacheExpire = 1800000
+    // On ESI's side, 5 mins
+    // 20 hours
+    cacheExpire = 10e6*7.2
   }
   var typeLookupMatch = path.match(/^universe\/types\/([\d]+)\/$/)
   if (typeLookupMatch) {
     type = 'type_lookup'
     mockResponseTime = 500
     mockResponse = sampleType
-    cacheExpire = 86400000
+    // On ESI's side, 1 day
+    // 90 days
+    cacheExpire = 10e8*7.776
   }
 
   var cacheKey = method + '+' + api_base + path
@@ -151,7 +158,9 @@ function apiRequest (method, path, postData, onRes) {
   })
   function doRequest () {
     const reqStart = new Date()
-    mockResponseTime += 200
+    // (this would be the http request)
+    mockResponseTime += 5000
+    // (end request)
     setTimeout(function () {
       var totalTime = new Date().getTime() - reqStart
       // console.log('completed', path, 'in', totalTime, 'ms')
