@@ -3,7 +3,6 @@
 var axarTelemetry = require('axar-telemetry')
 var mr = require('micro-request')
 var async = require('async')
-var sqlite3 = require('sqlite3').verbose()
 var api_base = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
 var csvStringify = require('csv-stringify/sync').stringify
@@ -12,13 +11,6 @@ var querystring = require('querystring')
 var idgen = require('idgen')
 var runId = idgen(6)
 console.log('runId', runId)
-
-/*
-if (!fs.existsSync('./data/eve.sqlite')) {
-  console.error('Please run ./get-db.sh first')
-  process.exit(1)
-}
-*/
 
 var sampleContractsPage = require('./contracts_jita_p1.json')
 var sampleContractItems = require('./contract.json')
@@ -68,7 +60,7 @@ const csvHeaders = [
 const hubs = require('./regions.json')
 const hub_ids = Object.keys(hubs)
 
-const db = new sqlite3.Database('eve-bpcs.sqlite')
+const db = require('axar-sde')()
 
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');

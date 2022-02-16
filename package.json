@@ -17,6 +17,7 @@
   "dependencies": {
     "ansi-colors": "^4.1.1",
     "async": "^3.2.3",
+    "axar-sde": "^0.1.1",
     "axar-telemetry": "file:../axar-telemetry",
     "cli-progress": "^3.10.0",
     "csv": "^6.0.5",
