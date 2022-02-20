@@ -43,6 +43,7 @@ var parser = function (pasteText) {
       volume: volume,
       price: price
     }
+    console.log(line, item)
     result.push(item)
   })
   return result

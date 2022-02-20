@@ -12,6 +12,7 @@ console.log('runId', runId)
 
 var dbName = process.env.SIM ? 'eve-bpc-avg-mock' : 'eve-bpc-avg'
 var barPrefix = process.env.SIM ? '(MOCK) ' : ''
+var outputSuffix = process.env.SIM ? '_mock' : ''
 
 var sampleContractsPage = require('./contracts_jita_p1.json')
 var sampleContractItems = require('./contract.json')
@@ -338,7 +339,7 @@ function doRegionContracts (contractsDone) {
     async.doWhilst(function (pageCb) {
       // create new progress bar
       const b1 = new cliProgress.SingleBar({
-        format: '(MOCK) Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
+        format: barPrefix + 'Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
         barCompleteChar: '\u2588',
         barIncompleteChar: '\u2591',
         hideCursor: true
@@ -547,7 +548,7 @@ function finalize (err) {
   var numItems = Object.keys(results.items).length
   console.error('Found', numItems, 'unique items.')
   const b1 = new cliProgress.SingleBar({
-    format: '(MOCK) Looking up items... |' + colors.yellow('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
+    format: barPrefix + 'Looking up items... |' + colors.yellow('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true
@@ -772,9 +773,9 @@ function finalize (err) {
     if (err) throw err
     b1.stop();
     console.log('data collected! writing CSV...')
-    var file = fs.createWriteStream('./output_mock.csv')
+    var file = fs.createWriteStream('./output' + outputSuffix + '.csv')
     file.once('finish', function () {
-      console.log('wrote', './output_mock.csv with', rows.length, 'rows')
+      console.log('wrote', './output' + outputSuffix + '.csv with', rows.length, 'rows')
       db.close()
       process.exit(0)
     })

@@ -3,11 +3,12 @@ var axarTelemetry = require('axar-telemetry')
 var async = require('async')
 var timebucket = require('timebucket')
 
-var interval = '1m'
+var interval = '30m'
 var lookback = 3
+var collSuffix = process.env.SIM ? '-mock' : ''
 
 console.log('starting')
-axarTelemetry({dbName: 'eve-bpc-avg-mock'}, function (err, tele) {
+axarTelemetry({dbName: 'eve-bpc-avg' + collSuffix}, function (err, tele) {
   if (err) throw err
   console.log('connected')
   var bounds = [], runId
@@ -44,6 +45,7 @@ axarTelemetry({dbName: 'eve-bpc-avg-mock'}, function (err, tele) {
       runId,
       timestamp: {$gte: bounds[0]}
     }
+    console.log('queryBase', queryBase)
     // enum event types
     tele.collection.distinct('type', {runId}, function (err, eventTypes) {
       if (err) throw err
