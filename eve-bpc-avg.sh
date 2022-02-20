@@ -3,7 +3,7 @@
 var axarTelemetry = require('axar-telemetry')
 var mr = require('micro-request')
 var async = require('async')
-var api_base = 'https://esi.evetech.net/latest/'
+var apiBase = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
 var csvStringify = require('csv-stringify/sync').stringify
 var assert = require('assert')
@@ -11,6 +11,9 @@ var querystring = require('querystring')
 var idgen = require('idgen')
 var runId = idgen(6)
 console.log('runId', runId)
+
+var dbName = process.env.SIM ? 'eve-bpc-avg-mock' : 'eve-bpc-avg'
+var barPrefix = process.env.SIM ? '(MOCK) ' : ''
 
 var sampleContractsPage = require('./contracts_jita_p1.json')
 var sampleContractItems = require('./contract.json')
@@ -104,8 +107,6 @@ var apiRequest = function (method, path, postData, onRes) {
   var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
   if (contractsPublicItemsMatch) {
     type = 'contract_items'
-    mockResponseTime = 400
-    mockResponse = sampleContractItems
     // On ESI's side, 1 hour
     // 90 days
     cacheExpire = 10e8*7.776
@@ -113,16 +114,6 @@ var apiRequest = function (method, path, postData, onRes) {
   var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
   if (marketOrdersMatch) {
     type = 'list_orders'
-    mockResponseTime = 1000
-    mockResponse = sampleOrdersPage
-    if (marketOrdersMatch[1] === '10000002') {
-      if (postData.page === 220) {
-        mockResponse = [].slice.call(mockResponse, 1)
-      }
-    }
-    else if (postData.page === 30) {
-      mockResponse = [].slice.call(mockResponse, 1)
-    }
     // On ESI's side, 5 mins
     // 20 hours
     cacheExpire = 10e6*7.2
@@ -130,14 +121,12 @@ var apiRequest = function (method, path, postData, onRes) {
   var typeLookupMatch = path.match(/^universe\/types\/([\d]+)\/$/)
   if (typeLookupMatch) {
     type = 'type_lookup'
-    mockResponseTime = 500
-    mockResponse = sampleType
     // On ESI's side, 1 day
     // 90 days
     cacheExpire = 10e8*7.776
   }
 
-  var cacheKey = method + '+' + api_base + path
+  var cacheKey = method + '+' + apiBase + path
   if (Object.keys(postData).length) {
     cacheKey += '?' + querystring.stringify(postData)
   }
@@ -155,7 +144,7 @@ var apiRequest = function (method, path, postData, onRes) {
   })
   function doRequest () {
     //console.log('api req ', method, path)
-    var reqUrl = api_base + path
+    var reqUrl = apiBase + path
     var query = JSON.parse(JSON.stringify(postData))
     ;(function retry () {
       // (end request)
@@ -197,7 +186,7 @@ var apiRequest = function (method, path, postData, onRes) {
             timestamp: new Date().getTime(),
             responseTime: totalTime,
             body: body,
-            headers: null,
+            headers: resp.headers,
             statusCode: resp.statusCode,
             runId: runId
           }
@@ -273,7 +262,7 @@ if (process.env.SIM) {
       cacheExpire = 10e8*7.776
     }
 
-    var cacheKey = method + '+' + api_base + path
+    var cacheKey = method + '+' + apiBase + path
     if (Object.keys(postData).length) {
       cacheKey += '?' + querystring.stringify(postData)
     }
@@ -322,10 +311,10 @@ if (process.env.SIM) {
 }
 
 function doBackendConnect (connectDone) {
-  axarTelemetry({dbName: 'eve-bpc-avg-mock'}, function (err, teleInstance) {
+  axarTelemetry({dbName: dbName}, function (err, teleInstance) {
     if (err) return connectDone(err)
     tele = teleInstance
-    connectBackend({dbName: 'eve-bpc-avg-mock'}, function (err, _client, _db) {
+    connectBackend({dbName: dbName}, function (err, _client, _db) {
       if (err) return connectDone(err)
       mongo = _db
       cache = mongo.collection('cache')
@@ -480,7 +469,7 @@ function doRegionOrders (ordersDone) {
 
     // create new progress bar
     const b1 = new cliProgress.SingleBar({
-      format: '(MOCK) Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} x1000 Orders || Speed: {speed}',
+      format: barPrefix + 'Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} x1000 Orders || Speed: {speed}',
       barCompleteChar: '\u2588',
       barIncompleteChar: '\u2591',
       hideCursor: true

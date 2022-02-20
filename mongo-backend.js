@@ -9,7 +9,7 @@ function connectBackend (options, cb) {
     options.url = 'mongodb://localhost:27017'
   }
   if (!options.dbName) {
-    options.dbName = 'eve-bpc-avg'
+    options.dbName = process.env.SIM ? 'eve-bpc-avg-mock' : 'eve-bpc-avg'
   }
   var client = new MongoClient(options.url)
   client.connect(function (err) {
