@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:1339';
+const API_URL = '';
 
 // Submit inventory paste data.
 async function httpPostEstimate (data) {
