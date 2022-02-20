@@ -23,7 +23,7 @@ var parser = function (pasteText) {
     if (numbers && numbers.length) {
       var parsedNumber
       for (var idx = 0; idx < numbers.length; idx++) {
-        if (parsedNumber = numbers[idx].match(/([\d,\.]+)(?: (m3|ISK))?$/)) {
+        if (parsedNumber = numbers[idx].match(/([\d,\.]+)(?: (m3|ISK)) ?$/)) {
           var value = parseFloat(parsedNumber[1].replace(/[,]/g, ''), 10)
           if (parsedNumber[2] === 'm3') {
             volume = value
