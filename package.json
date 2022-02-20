@@ -2,7 +2,6 @@
   "name": "eve-bpc-avg",
   "version": "0.0.0",
   "description": "Collects current statistics about EVE Online blueprint copies found in contracts near trade hubs.",
-  "bin": "node --max-old-space-size=3000 eve-bpc-avg.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -10,7 +9,8 @@
     "build": "npm run --prefix frontend build",
     "build-tele": "node ./telemetry/graph-json.js",
     "serve-tele": "static -p 3000 -a 0.0.0.0 ./telemetry",
-    "tele": "npm run build-tele && npm run serve-tele"
+    "tele": "npm run build-tele && npm run serve-tele",
+    "snapshot": "node --max-old-space-size=3000 eve-bpc-avg.js"
   },
   "author": "Axar Tiberius",
   "license": "MIT",
