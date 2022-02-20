@@ -24,7 +24,8 @@ var
   apiTimeout =        5000,
   itemLookupLimit =   8,
   itemLookupTimeout = 0,
-  orderProgressMax =  250
+  orderProgressMax =  250,
+  throttleTime =      5000
 
 // optional authentication
 var accessToken = null
@@ -68,13 +69,20 @@ const colors = require('ansi-colors');
 var connectBackend = require('./mongo-backend')
 var tele, mongo, cache, mongoClient
 
-function apiRequest (method, path, postData, onRes) {
+var apiRequest = function (method, path, postData, onRes) {
   if (typeof postData === 'function') {
     onRes = postData
     postData = null
   }
-  postData || (postData = {})
-  var mockResponseTime = 0, mockResponse
+  postData || (postData = {});
+  postData.datasource || (postData.datasource = 'tranquility');
+  var headers = {
+    'Accept': 'application/json',
+    'Cache-Control': 'no-cache'
+  }
+  if (accessToken) {
+    headers['Authorization'] = 'Bearer ' + accessToken
+  }
   var contractsPublicMatch = path.match(/^contracts\/public\/([\d]+)\/$/)
   var type, cacheExpire
   if (contractsPublicMatch) {
@@ -137,42 +145,179 @@ function apiRequest (method, path, postData, onRes) {
   if (!type) {
     throw new Error('unknown API request: ' + cacheKey)
   }
-  var resp = {
-    statusCode: 200
-  }
 
   cache.findOne({_id: cacheKey, timestamp: {$gt: new Date().getTime() - cacheExpire}}, function (err, doc) {
     if (err) return onRes(err)
-    if (false) { //doc) {
+    if (doc) {
       return onRes(null, doc.body, {statusCode: doc.statusCode})
     }
     doRequest()
   })
   function doRequest () {
-    const reqStart = new Date()
-    // (this would be the http request)
-    mockResponseTime += 5000
-    // (end request)
-    setTimeout(function () {
-      var totalTime = new Date().getTime() - reqStart
-      // console.log('completed', path, 'in', totalTime, 'ms')
+    //console.log('api req ', method, path)
+    var reqUrl = api_base + path
+    var query = JSON.parse(JSON.stringify(postData))
+    ;(function retry () {
+      // (end request)
+      setTimeout(function () {
+        var reqStart = new Date()
+        mr[method.toLowerCase()](reqUrl, {headers, query, timeout: apiTimeout}, function (err, resp, body) {
+          //console.log(body)
+          if (err) {
+            if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
+              //console.error('warning: connection error for ' + path + ', retrying')
+              return retry()
+            }
+            return onRes(err)
+          }
+          var totalTime = new Date().getTime() - reqStart
+          //console.log('completed', path, 'in', total_time, 'ms', resp.statusCode)
+          if (Buffer.isBuffer(body)) {
+            body = body.toString('utf8')
+          }
+          if (typeof body === 'string' && body.length) {
+            try {
+              body = JSON.parse(body)
+            }
+            catch (e) {
+              //console.error('unexpected api response: ' + body)
+              return retry()
+              body = {}
+            }
+          }
+          if (!body) {
+            body = {}
+          }
 
-      tele.record({type, totalTime, runId})
+          tele.record({type, totalTime, runId})
 
-      var cacheEntry = {
-        _id: cacheKey,
-        type: type,
-        timestamp: new Date().getTime(),
-        responseTime: mockResponseTime,
-        body: mockResponse,
-        headers: null,
-        statusCode: resp.statusCode
+          var cacheEntry = {
+            _id: cacheKey,
+            type: type,
+            timestamp: new Date().getTime(),
+            responseTime: totalTime,
+            body: body,
+            headers: null,
+            statusCode: resp.statusCode,
+            runId: runId
+          }
+          cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
+            if (err) console.error('cache upsert err', err)
+            onRes(null, body, resp)
+          })
+        })
+      }, throttleTime)
+    })()
+  }
+}
+
+if (process.env.SIM) {
+  apiRequest = function (method, path, postData, onRes) {
+    if (typeof postData === 'function') {
+      onRes = postData
+      postData = null
+    }
+    postData || (postData = {})
+    var mockResponseTime = 0, mockResponse
+    var contractsPublicMatch = path.match(/^contracts\/public\/([\d]+)\/$/)
+    var type, cacheExpire
+    if (contractsPublicMatch) {
+      type = 'list_contracts'
+      mockResponseTime = 1200
+      mockResponse = sampleContractsPage
+      if (contractsPublicMatch[1] === '10000002') {
+        if (postData.page === 25) {
+          mockResponse = [].slice.call(mockResponse, 1)
+        }
       }
-      cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
-        if (err) return onRes(err)
-        onRes(null, mockResponse, resp)
-      })
-    }, mockResponseTime)
+      else if (postData.page === 5) {
+        mockResponse = [].slice.call(mockResponse, 1)
+      }
+      // On ESI's side, 30 mins
+      // 20 hours
+      cacheExpire = 10e6*7.2
+    }
+    var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
+    if (contractsPublicItemsMatch) {
+      type = 'contract_items'
+      mockResponseTime = 400
+      mockResponse = sampleContractItems
+      // On ESI's side, 1 hour
+      // 90 days
+      cacheExpire = 10e8*7.776
+    }
+    var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
+    if (marketOrdersMatch) {
+      type = 'list_orders'
+      mockResponseTime = 1000
+      mockResponse = sampleOrdersPage
+      if (marketOrdersMatch[1] === '10000002') {
+        if (postData.page === 220) {
+          mockResponse = [].slice.call(mockResponse, 1)
+        }
+      }
+      else if (postData.page === 30) {
+        mockResponse = [].slice.call(mockResponse, 1)
+      }
+      // On ESI's side, 5 mins
+      // 20 hours
+      cacheExpire = 10e6*7.2
+    }
+    var typeLookupMatch = path.match(/^universe\/types\/([\d]+)\/$/)
+    if (typeLookupMatch) {
+      type = 'type_lookup'
+      mockResponseTime = 500
+      mockResponse = sampleType
+      // On ESI's side, 1 day
+      // 90 days
+      cacheExpire = 10e8*7.776
+    }
+
+    var cacheKey = method + '+' + api_base + path
+    if (Object.keys(postData).length) {
+      cacheKey += '?' + querystring.stringify(postData)
+    }
+    // console.log('cacheKey', cacheKey)
+    if (!type) {
+      throw new Error('unknown API request: ' + cacheKey)
+    }
+    var resp = {
+      statusCode: 200
+    }
+
+    cache.findOne({_id: cacheKey, timestamp: {$gt: new Date().getTime() - cacheExpire}}, function (err, doc) {
+      if (err) return onRes(err)
+      if (false) { //doc) {
+        return onRes(null, doc.body, {statusCode: doc.statusCode})
+      }
+      doRequest()
+    })
+    function doRequest () {
+      const reqStart = new Date()
+      // (this would be the http request)
+      mockResponseTime += throttleTime
+      // (end request)
+      setTimeout(function () {
+        var totalTime = new Date().getTime() - reqStart
+        // console.log('completed', path, 'in', totalTime, 'ms')
+
+        tele.record({type, totalTime, runId})
+
+        var cacheEntry = {
+          _id: cacheKey,
+          type: type,
+          timestamp: new Date().getTime(),
+          responseTime: mockResponseTime,
+          body: mockResponse,
+          headers: null,
+          statusCode: resp.statusCode
+        }
+        cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
+          if (err) return onRes(err)
+          onRes(null, mockResponse, resp)
+        })
+      }, mockResponseTime)
+    }
   }
 }
 
