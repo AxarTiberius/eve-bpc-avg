@@ -1,27 +1,31 @@
 #!/usr/bin/env node
 
+var axarTelemetry = require('axar-telemetry')
 var mr = require('micro-request')
 var async = require('async')
-var sqlite3 = require('sqlite3').verbose()
 var api_base = 'https://esi.evetech.net/latest/'
 var fs = require('fs')
 var csvStringify = require('csv-stringify/sync').stringify
 var assert = require('assert')
-/*
-if (!fs.existsSync('./data/eve.sqlite')) {
-  console.error('Please run ./get-db.sh first')
-  process.exit(1)
-}
-*/
+var querystring = require('querystring')
+var idgen = require('idgen')
+var runId = idgen(6)
+console.log('runId', runId)
+
+var sampleContractsPage = require('./contracts_jita_p1.json')
+var sampleContractItems = require('./contract.json')
+var sampleOrdersPage = require('./orders_jita_p220.json')
+var sampleType = require('./sample_type.json')
 
 var
-  taskLimit =         64,
+  taskLimit =         8,
   sortIndex =         20,
   pageLimit =         1000,
   apiTimeout =        5000,
-  itemLookupLimit =   64,
-  itemLookupTimeout = 64,
-  orderProgressMax =  250
+  itemLookupLimit =   8,
+  itemLookupTimeout = 0,
+  orderProgressMax =  250,
+  throttleTime =      5000
 
 // optional authentication
 var accessToken = null
@@ -57,12 +61,15 @@ const csvHeaders = [
 const hubs = require('./regions.json')
 const hub_ids = Object.keys(hubs)
 
-const db = new sqlite3.Database('eve-bpcs.sqlite')
+const db = require('axar-sde')()
 
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');
 
-function apiRequest (method, path, postData, onRes) {
+var connectBackend = require('./mongo-backend')
+var tele, mongo, cache, mongoClient
+
+var apiRequest = function (method, path, postData, onRes) {
   if (typeof postData === 'function') {
     onRes = postData
     postData = null
@@ -76,52 +83,264 @@ function apiRequest (method, path, postData, onRes) {
   if (accessToken) {
     headers['Authorization'] = 'Bearer ' + accessToken
   }
-  //console.log('api req ', method, path)
-  const req_start = new Date()
-  const reqUrl = api_base + path
-  const query = JSON.parse(JSON.stringify(postData))
-  ;(function retry () {
-    mr[method.toLowerCase()](reqUrl, {headers, query, timeout: apiTimeout}, function (err, resp, body) {
-      console.log(body)
-      if (err) {
-        if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
-          //console.error('warning: connection error for ' + path + ', retrying')
-          return retry()
+  var contractsPublicMatch = path.match(/^contracts\/public\/([\d]+)\/$/)
+  var type, cacheExpire
+  if (contractsPublicMatch) {
+    type = 'list_contracts'
+    mockResponseTime = 1200
+    mockResponse = sampleContractsPage
+    if (contractsPublicMatch[1] === '10000002') {
+      if (postData.page === 25) {
+        mockResponse = [].slice.call(mockResponse, 1)
+      }
+    }
+    else if (postData.page === 5) {
+      mockResponse = [].slice.call(mockResponse, 1)
+    }
+    // On ESI's side, 30 mins
+    // 20 hours
+    cacheExpire = 10e6*7.2
+  }
+  var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
+  if (contractsPublicItemsMatch) {
+    type = 'contract_items'
+    mockResponseTime = 400
+    mockResponse = sampleContractItems
+    // On ESI's side, 1 hour
+    // 90 days
+    cacheExpire = 10e8*7.776
+  }
+  var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
+  if (marketOrdersMatch) {
+    type = 'list_orders'
+    mockResponseTime = 1000
+    mockResponse = sampleOrdersPage
+    if (marketOrdersMatch[1] === '10000002') {
+      if (postData.page === 220) {
+        mockResponse = [].slice.call(mockResponse, 1)
+      }
+    }
+    else if (postData.page === 30) {
+      mockResponse = [].slice.call(mockResponse, 1)
+    }
+    // On ESI's side, 5 mins
+    // 20 hours
+    cacheExpire = 10e6*7.2
+  }
+  var typeLookupMatch = path.match(/^universe\/types\/([\d]+)\/$/)
+  if (typeLookupMatch) {
+    type = 'type_lookup'
+    mockResponseTime = 500
+    mockResponse = sampleType
+    // On ESI's side, 1 day
+    // 90 days
+    cacheExpire = 10e8*7.776
+  }
+
+  var cacheKey = method + '+' + api_base + path
+  if (Object.keys(postData).length) {
+    cacheKey += '?' + querystring.stringify(postData)
+  }
+  // console.log('cacheKey', cacheKey)
+  if (!type) {
+    throw new Error('unknown API request: ' + cacheKey)
+  }
+
+  cache.findOne({_id: cacheKey, timestamp: {$gt: new Date().getTime() - cacheExpire}}, function (err, doc) {
+    if (err) return onRes(err)
+    if (doc) {
+      return onRes(null, doc.body, {statusCode: doc.statusCode})
+    }
+    doRequest()
+  })
+  function doRequest () {
+    //console.log('api req ', method, path)
+    var reqUrl = api_base + path
+    var query = JSON.parse(JSON.stringify(postData))
+    ;(function retry () {
+      // (end request)
+      setTimeout(function () {
+        var reqStart = new Date()
+        mr[method.toLowerCase()](reqUrl, {headers, query, timeout: apiTimeout}, function (err, resp, body) {
+          //console.log(body)
+          if (err) {
+            if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
+              //console.error('warning: connection error for ' + path + ', retrying')
+              return retry()
+            }
+            return onRes(err)
+          }
+          var totalTime = new Date().getTime() - reqStart
+          //console.log('completed', path, 'in', total_time, 'ms', resp.statusCode)
+          if (Buffer.isBuffer(body)) {
+            body = body.toString('utf8')
+          }
+          if (typeof body === 'string' && body.length) {
+            try {
+              body = JSON.parse(body)
+            }
+            catch (e) {
+              //console.error('unexpected api response: ' + body)
+              return retry()
+              body = {}
+            }
+          }
+          if (!body) {
+            body = {}
+          }
+
+          tele.record({type, totalTime, runId})
+
+          var cacheEntry = {
+            _id: cacheKey,
+            type: type,
+            timestamp: new Date().getTime(),
+            responseTime: totalTime,
+            body: body,
+            headers: null,
+            statusCode: resp.statusCode,
+            runId: runId
+          }
+          cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
+            if (err) console.error('cache upsert err', err)
+            onRes(null, body, resp)
+          })
+        })
+      }, throttleTime)
+    })()
+  }
+}
+
+if (process.env.SIM) {
+  apiRequest = function (method, path, postData, onRes) {
+    if (typeof postData === 'function') {
+      onRes = postData
+      postData = null
+    }
+    postData || (postData = {})
+    var mockResponseTime = 0, mockResponse
+    var contractsPublicMatch = path.match(/^contracts\/public\/([\d]+)\/$/)
+    var type, cacheExpire
+    if (contractsPublicMatch) {
+      type = 'list_contracts'
+      mockResponseTime = 1200
+      mockResponse = sampleContractsPage
+      if (contractsPublicMatch[1] === '10000002') {
+        if (postData.page === 25) {
+          mockResponse = [].slice.call(mockResponse, 1)
         }
-        return onRes(err)
       }
-      var total_time = new Date().getTime() - req_start
-      //console.log('completed', path, 'in', total_time, 'ms', resp.statusCode)
-      if (Buffer.isBuffer(body)) {
-        body = body.toString('utf8')
+      else if (postData.page === 5) {
+        mockResponse = [].slice.call(mockResponse, 1)
       }
-      if (typeof body === 'string' && body.length) {
-        try {
-          body = JSON.parse(body)
+      // On ESI's side, 30 mins
+      // 20 hours
+      cacheExpire = 10e6*7.2
+    }
+    var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
+    if (contractsPublicItemsMatch) {
+      type = 'contract_items'
+      mockResponseTime = 400
+      mockResponse = sampleContractItems
+      // On ESI's side, 1 hour
+      // 90 days
+      cacheExpire = 10e8*7.776
+    }
+    var marketOrdersMatch = path.match(/^markets\/([\d]+)\/orders\/$/)
+    if (marketOrdersMatch) {
+      type = 'list_orders'
+      mockResponseTime = 1000
+      mockResponse = sampleOrdersPage
+      if (marketOrdersMatch[1] === '10000002') {
+        if (postData.page === 220) {
+          mockResponse = [].slice.call(mockResponse, 1)
         }
-        catch (e) {
-          //console.error('unexpected api response: ' + body)
-          return retry()
-          body = {}
-        }
       }
-      if (!body) {
-        body = {}
+      else if (postData.page === 30) {
+        mockResponse = [].slice.call(mockResponse, 1)
       }
-      onRes(null, body, resp)
+      // On ESI's side, 5 mins
+      // 20 hours
+      cacheExpire = 10e6*7.2
+    }
+    var typeLookupMatch = path.match(/^universe\/types\/([\d]+)\/$/)
+    if (typeLookupMatch) {
+      type = 'type_lookup'
+      mockResponseTime = 500
+      mockResponse = sampleType
+      // On ESI's side, 1 day
+      // 90 days
+      cacheExpire = 10e8*7.776
+    }
+
+    var cacheKey = method + '+' + api_base + path
+    if (Object.keys(postData).length) {
+      cacheKey += '?' + querystring.stringify(postData)
+    }
+    // console.log('cacheKey', cacheKey)
+    if (!type) {
+      throw new Error('unknown API request: ' + cacheKey)
+    }
+    var resp = {
+      statusCode: 200
+    }
+
+    cache.findOne({_id: cacheKey, timestamp: {$gt: new Date().getTime() - cacheExpire}}, function (err, doc) {
+      if (err) return onRes(err)
+      if (false) { //doc) {
+        return onRes(null, doc.body, {statusCode: doc.statusCode})
+      }
+      doRequest()
     })
-  })()
+    function doRequest () {
+      const reqStart = new Date()
+      // (this would be the http request)
+      mockResponseTime += throttleTime
+      // (end request)
+      setTimeout(function () {
+        var totalTime = new Date().getTime() - reqStart
+        // console.log('completed', path, 'in', totalTime, 'ms')
+
+        tele.record({type, totalTime, runId})
+
+        var cacheEntry = {
+          _id: cacheKey,
+          type: type,
+          timestamp: new Date().getTime(),
+          responseTime: mockResponseTime,
+          body: mockResponse,
+          headers: null,
+          statusCode: resp.statusCode
+        }
+        cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
+          if (err) return onRes(err)
+          onRes(null, mockResponse, resp)
+        })
+      }, mockResponseTime)
+    }
+  }
+}
+
+function doBackendConnect (connectDone) {
+  axarTelemetry({dbName: 'eve-bpc-avg-mock'}, function (err, teleInstance) {
+    if (err) return connectDone(err)
+    tele = teleInstance
+    connectBackend({dbName: 'eve-bpc-avg-mock'}, function (err, _client, _db) {
+      if (err) return connectDone(err)
+      mongo = _db
+      cache = mongo.collection('cache')
+      mongoClient = _client
+      cache.createIndex({timestamp: -1, type: 1}, function (err) {
+        if (err) return connectDone(err)
+        connectDone()
+      })
+    })
+  })
 }
 
 var rows = [
   csvHeaders
 ], results = {items: {}}
-
-async.series([
-  doRegionContracts,
-  doRegionOrders
-], finalize)
-
 function doRegionContracts (contractsDone) {
   async.reduce(hub_ids, null, function (_ignore, regionID, done) {
     // type: 1 is item_exchange
@@ -131,7 +350,7 @@ function doRegionContracts (contractsDone) {
     async.doWhilst(function (pageCb) {
       // create new progress bar
       const b1 = new cliProgress.SingleBar({
-        format: 'Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
+        format: '(MOCK) Searching ' + hubs['' + regionID] + ' page ' + page + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Contracts || Speed: {speed}',
         barCompleteChar: '\u2588',
         barIncompleteChar: '\u2591',
         hideCursor: true
@@ -224,10 +443,10 @@ function doRegionContracts (contractsDone) {
                   }
                 })
                 if (contract.reward) {
-                  console.error('reward for all included?', regionID, contract, items)
+                  //console.error('reward for all included?', regionID, contract, items)
                 }
                 if (!contract.price) {
-                  console.error('free??', regionID, contract, items)
+                  //console.error('free??', regionID, contract, items)
                 }
               }
               b1.increment(1, {
@@ -261,7 +480,7 @@ function doRegionOrders (ordersDone) {
 
     // create new progress bar
     const b1 = new cliProgress.SingleBar({
-      format: 'Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} x1000 Orders || Speed: {speed}',
+      format: '(MOCK) Searching ' + hubs['' + regionID] + ' |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} x1000 Orders || Speed: {speed}',
       barCompleteChar: '\u2588',
       barIncompleteChar: '\u2591',
       hideCursor: true
@@ -340,7 +559,7 @@ function finalize (err) {
   var numItems = Object.keys(results.items).length
   console.error('Found', numItems, 'unique items.')
   const b1 = new cliProgress.SingleBar({
-    format: 'Looking up items... |' + colors.yellow('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
+    format: '(MOCK) Looking up items... |' + colors.yellow('{bar}') + '| {percentage}% || {value}/{total} Items || Speed: {speed}',
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true
@@ -565,9 +784,9 @@ function finalize (err) {
     if (err) throw err
     b1.stop();
     console.log('data collected! writing CSV...')
-    var file = fs.createWriteStream('./output.csv')
+    var file = fs.createWriteStream('./output_mock.csv')
     file.once('finish', function () {
-      console.log('wrote', './output.csv with', rows.length, 'rows')
+      console.log('wrote', './output_mock.csv with', rows.length, 'rows')
       db.close()
       process.exit(0)
     })
@@ -589,5 +808,13 @@ function finalize (err) {
       file.write(csvStringify([row]))
     })
     file.end()
+    tele.close()
+    mongoClient.close()
   })
 }
+
+async.series([
+  doBackendConnect,
+  doRegionContracts,
+  doRegionOrders
+], finalize)

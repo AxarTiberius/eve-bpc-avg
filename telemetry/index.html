@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>axar-telemetry Test</title>
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
+</head>
+<body>
+  <main>
+    <div id="main" style="width: 1000px;height:400px;"></div>
+    <script>
+      var chartDom = document.getElementById('main');
+      var myChart = echarts.init(chartDom);
+      var option;
+
+      $.get(
+        '/results.json',
+        function (results) {
+          var categoryData = []
+          var valueData = []
+          option = {
+            title: {
+              text: 'API Requests/min',
+              left: 10
+            },
+            legend: {},
+            toolbox: {
+              feature: {
+                dataZoom: {
+                  yAxisIndex: false
+                },
+                saveAsImage: {
+                  pixelRatio: 2
+                }
+              }
+            },
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'shadow'
+              }
+            },
+            grid: {
+              bottom: 90
+            },
+            dataZoom: [
+              {
+                type: 'inside'
+              },
+              {
+                type: 'slider'
+              }
+            ],
+            xAxis: {
+              data: categoryData,
+              silent: false,
+              splitLine: {
+                show: false
+              },
+              splitArea: {
+                show: false
+              }
+            },
+            yAxis: {
+              type: 'value',
+              name: 'Requests/min',
+              axisLabel: {
+                formatter: '{value}/min'
+              },
+              splitArea: {
+                show: false
+              }
+            },
+            series: []
+          };
+          if (!results || !results.all) {
+            console.error('bad results', results)
+            myChart.setOption(option);
+            return
+          }
+          results.all.forEach(function (item) {
+            categoryData.push(echarts.format.formatTime('yyyy-MM-dd\nhh:mm:ss', new Date(item.time), false))
+          })
+          Object.keys(results).forEach(function (eventType, idx) {
+            var seriesData = []
+            results[eventType].forEach(function (item) {
+              seriesData.push(item.sum)
+            })
+            option.series.push({
+              data: seriesData,
+              // smooth: true,
+              name: eventType,
+              type: 'line',
+              //yAxisIndex: idx,
+              // stack: 'x',
+              //large: true
+            })
+          })
+          myChart.setOption(option);
+        })
+    </script>
+  </main>
+</body>
+</html>

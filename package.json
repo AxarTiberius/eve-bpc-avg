@@ -7,20 +7,29 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "develop": "",
-    "build": "npm run --prefix frontend build"
+    "build": "npm run --prefix frontend build",
+    "build-tele": "node ./telemetry/graph-json.js",
+    "serve-tele": "static -p 3000 -a 0.0.0.0 ./telemetry",
+    "tele": "npm run build-tele && npm run serve-tele"
   },
   "author": "Axar Tiberius",
   "license": "MIT",
   "dependencies": {
     "ansi-colors": "^4.1.1",
     "async": "^3.2.3",
+    "axar-sde": "^0.1.1",
+    "axar-telemetry": "file:../axar-telemetry",
     "cli-progress": "^3.10.0",
     "csv": "^6.0.5",
     "csv-stringify": "^6.0.5",
     "dotenv": "^16.0.0",
+    "idgen": "^2.1.0",
     "micro-request": "^666.0.10",
+    "mongodb": "^4.3.1",
     "motley": "^2.2.8",
     "motley-buffet": "^2.0.2",
-    "sqlite3": "^5.0.2"
+    "node-static": "^0.7.11",
+    "sqlite3": "^5.0.2",
+    "timebucket": "^0.4.0"
   }
 }
