@@ -2,7 +2,7 @@
   "name": "eve-bpc-avg",
   "version": "0.0.0",
   "description": "Collects current statistics about EVE Online blueprint copies found in contracts near trade hubs.",
-  "bin": "./eve-bpc-avg.sh",
+  "bin": "node --max-old-space-size=3000 eve-bpc-avg.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",

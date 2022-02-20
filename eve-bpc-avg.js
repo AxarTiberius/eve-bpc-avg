@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var axarTelemetry = require('axar-telemetry')
 var mr = require('micro-request')
 var async = require('async')
@@ -190,7 +188,7 @@ var apiRequest = function (method, path, postData, onRes) {
             statusCode: resp.statusCode,
             runId: runId
           }
-          cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
+          cache.updateOne({_id: cacheKey}, {$set: cacheEntry}, {upsert: true}, function (err) {
             if (err) console.error('cache upsert err', err)
             onRes(null, body, resp)
           })
@@ -299,9 +297,10 @@ if (process.env.SIM) {
           responseTime: mockResponseTime,
           body: mockResponse,
           headers: null,
-          statusCode: resp.statusCode
+          statusCode: resp.statusCode,
+          runId: runId
         }
-        cache.updateOne({_id: cacheKey}, {$set: {cacheEntry}}, {upsert: true}, function (err) {
+        cache.updateOne({_id: cacheKey}, {$set: cacheEntry}, {upsert: true}, function (err) {
           if (err) return onRes(err)
           onRes(null, mockResponse, resp)
         })
