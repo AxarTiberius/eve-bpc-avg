@@ -19,14 +19,14 @@ var parser = function (pasteText) {
       name = line.split('  ')[0]
     }
     // parse for numbers and units
-    var numbers = line.match(/ ([\d,\.]+) (?:m3|ISK)?/g)
+    var numbers = line.match(/\s([\d,\.]+)\s(?:m3|ISK)?/g)
     console.log('numbers', numbers)
     var quantity = 1, volume, price;
     if (numbers && numbers.length) {
       var parsedNumber
       for (var idx = 0; idx < numbers.length; idx++) {
         numbers[idx] = numbers[idx].trim()
-        if (parsedNumber = numbers[idx].match(/([\d,\.]+)(?: (m3|ISK))?/)) {
+        if (parsedNumber = numbers[idx].match(/([\d,\.]+)(?:\s(m3|ISK))?/)) {
           var value = parseFloat(parsedNumber[1].replace(/[,]/g, ''), 10)
           if (parsedNumber[2] === 'm3') {
             volume = value
