@@ -100,8 +100,8 @@ var apiRequest = function (method, path, postData, onRes) {
       mockResponse = [].slice.call(mockResponse, 1)
     }
     // On ESI's side, 30 mins
-    // 20 hours
-    cacheExpire = 10e6*7.2
+    // 1 hour
+    cacheExpire = 3600 * 1000
   }
   var contractsPublicItemsMatch = path.match(/^contracts\/public\/items\/([\d]+)\/$/)
   if (contractsPublicItemsMatch) {
