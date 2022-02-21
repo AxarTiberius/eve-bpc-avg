@@ -6,10 +6,10 @@ var parser = function (pasteText) {
     line = line.trim()
     if (line === '') return;
     // try to find quantity on the right bound
-    var name = line.match(/^([\w"'\- ]+?) (?: |[\d,\.])/)
+    var name = line.match(/^([\w"'\-\(\)\/ ]+?) (?: |[\d,\.])/)
     if (!name) {
       // fall back to no quantity
-      name = line.match(/^([\w"'\- ]+)/)
+      name = line.match(/^([\w"'\-\(\)\/ ]+)/)
     }
     if (name) {
       name = name[1]
